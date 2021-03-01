@@ -48,9 +48,21 @@ exports.updateAnnounce = async function (req, res, next) {
     "publication_date": req.body.publication_date,
     "tags": req.body.tags
   }
+
   try {
     let annouce = await AnnounceService.updateAnnounce(id, updateAnnounce)
     res.json({ data: annouce })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.deleteAnnounce = async function (req, res, next) {
+  let id = req.params.id
+
+  try {
+    let annouce = await AnnounceService.deleteAnnounce(id)
+    res.json({ data: 1 })
   } catch (err) {
     next(err)
   }

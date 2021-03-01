@@ -11,4 +11,6 @@ router.post('/create', announceValidation.createAnnounce, AnnounceController.cre
 
 router.put('/update/:id', announceValidation.createAnnounce, AnnounceController.updateAnnounce)
 
+router.delete('/delete/:id', announceValidation.getAnnounceById, AnnounceController.deleteAnnounce)
+
 module.exports = router;

@@ -25,6 +25,24 @@ exports.getAnnounceById = async function (id) {
   }
 }
 
+exports.deleteAnnounce = async function (id) {
+  try {
+    let announce = await Announce.destroy({
+      where: {
+        id: id
+      }
+    })
+
+    if (announce == 1) {
+      return true
+    } else {
+      throw ({ status: 404, message: 'Not found in the database' });
+    }
+  } catch (err) {
+    throw ({ status: 500, message: err.message || "Some error occurred while getting the Announce." });
+  }
+}
+
 exports.createAnnounce = async function (newAnnounce) {
   try {
     announce = await Announce.create(newAnnounce)
