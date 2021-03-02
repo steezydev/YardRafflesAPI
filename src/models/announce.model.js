@@ -1,5 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
   const Announce = sequelize.define("announcements", {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     title: {
       type: Sequelize.STRING
     },

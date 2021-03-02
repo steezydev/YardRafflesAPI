@@ -1,9 +1,18 @@
 const db = require("../models");
 const Announce = db.announce;
+const Tags = db.tags;
 
 exports.getAllAnnounces = async function () {
   try {
-    let annouces = await Announce.findAll()
+    let annouces = await Announce.findAll({
+      include: [
+        {
+          model: Tags,
+          as: "tags",
+          through: { attributes: [] }
+        },
+      ],
+    })
 
     return annouces;
   } catch (err) {
@@ -13,10 +22,14 @@ exports.getAllAnnounces = async function () {
 
 exports.getAnnounceById = async function (id) {
   try {
-    let annouces = await Announce.findAll({
-      where: {
-        id: id
-      }
+    let annouces = await Announce.findByPk(id, {
+      include: [
+        {
+          model: Tags,
+          as: "tags",
+          through: { attributes: [] }
+        },
+      ],
     })
 
     return annouces;
@@ -43,23 +56,44 @@ exports.deleteAnnounce = async function (id) {
   }
 }
 
-exports.createAnnounce = async function (newAnnounce) {
+exports.createAnnounce = async function (newAnnounce, tags) {
   try {
-    announce = await Announce.create(newAnnounce)
+    const result = await db.sequelize.transaction(async (t) => {
+      const creatAnnounce = await Announce.create(newAnnounce, {
+        include: [Tags],
+        transaction: t
+      })
 
-    return announce;
+      await creatAnnounce.addTag(tags, { transaction: t })
+
+      return creatAnnounce;
+    });
+
+    return await exports.getAnnounceById(result.id);
   } catch (err) {
     throw ({ status: 500, message: err.message || "Some error occurred while creating the Announce." });
   }
 }
 
-exports.updateAnnounce = async function (id, updateAnnounce) {
+exports.updateAnnounce = async function (id, updateAnnounce, tags) {
   try {
-    announce = await Announce.update(updateAnnounce, {
-      where: { id: id }
-    })
+    const result = await db.sequelize.transaction(async (t) => {
+      const oldAnnouce = await exports.getAnnounceById(id);
 
-    if (announce == 1) {
+      const announce = await Announce.update(updateAnnounce, {
+        where: {
+          id: id
+        },
+        include: [Tags],
+        transaction: t
+      })
+
+      await oldAnnouce.setTags(tags, { transaction: t })
+
+      return announce;
+    });
+
+    if (result == 1) {
       return await exports.getAnnounceById(id)
     } else {
       throw ({ status: 404, message: 'Not found in the database' });
@@ -68,3 +102,26 @@ exports.updateAnnounce = async function (id, updateAnnounce) {
     throw ({ status: 500, message: err.message });
   }
 }
+
+exports.addAnnounce = (tagId, annouceId) => {
+  return Tags.findByPk(tagId)
+    .then((tag) => {
+      if (!tag) {
+        console.log("Tag not found!");
+        return null;
+      }
+      return Announce.findByPk(annouceId).then((annouce) => {
+        if (!annouce) {
+          console.log("Tutorial not found!");
+          return null;
+        }
+
+        tag.addAnnounce(annouce);
+        console.log(`>> added Tutorial id=${tutorial.id} to Tag id=${tag.id}`);
+        return tag;
+      });
+    })
+    .catch((err) => {
+      console.log(">> Error while adding Tutorial to Tag: ", err);
+    });
+};

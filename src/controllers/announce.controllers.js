@@ -1,4 +1,5 @@
 const AnnounceService = require('../services/announce.services')
+const TagsService  = require('../services/tags.services')
 
 exports.getAllAnnounces = async function (req, res, next) {
   try {
@@ -26,12 +27,15 @@ exports.createAnnounce = async function (req, res, next) {
     "work_name": req.body.work_name,
     "images": req.body.images,
     "message": req.body.message,
-    "publication_date": req.body.publication_date,
-    "tags": req.body.tags
+    "publication_date": req.body.publication_date
   }
 
+  let tags = req.body.tags
+
   try {
-    let annouce = await AnnounceService.createAnnounce(newAnnounce)
+    await TagsService.checkTags(tags);
+
+    let annouce = await AnnounceService.createAnnounce(newAnnounce, tags)
     res.json({ data: annouce })
   } catch (err) {
     next(err)
@@ -46,11 +50,14 @@ exports.updateAnnounce = async function (req, res, next) {
     "images": req.body.images,
     "message": req.body.message,
     "publication_date": req.body.publication_date,
-    "tags": req.body.tags
   }
+  
+  let tags = req.body.tags
 
   try {
-    let annouce = await AnnounceService.updateAnnounce(id, updateAnnounce)
+    await TagsService.checkTags(tags);
+
+    let annouce = await AnnounceService.updateAnnounce(id, updateAnnounce, tags)
     res.json({ data: annouce })
   } catch (err) {
     next(err)
