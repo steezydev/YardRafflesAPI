@@ -1,12 +1,14 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
-const expressValidator = require('express-validator')
 const app = express()
+//const cors = require("cors")
 
 const announceRoute = require('./routes/announce.routes')
+const adminRoute = require('./routes/admin.routes')
 
 app.use(helmet())
+
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -15,6 +17,7 @@ app.use(
 app.use(bodyParser.json())
 
 app.use('/api/announce', announceRoute)
+app.use('/api/admin', adminRoute)
 
 app.use((req, res, next) => {
   const error = new Error('Not found')

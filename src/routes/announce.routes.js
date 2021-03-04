@@ -3,14 +3,48 @@ const router = Router();
 const AnnounceController = require('../controllers/announce.controllers');
 const announceValidation = require('../validation/announce.validator.js');
 
-router.get('/getAnnounces', AnnounceController.getAllAnnounces)
+const authMiddleware = require("../middleware/auth");
 
-router.get('/get/:id', announceValidation.getAnnounceById, AnnounceController.getAnnounceById)
+router.get(
+  '/getAnnounces', 
+  authMiddleware.authenticateToken, 
+  AnnounceController.getAllAnnounces
+)
 
-router.post('/create', announceValidation.createAnnounce, AnnounceController.createAnnounce)
+router.get(
+  '/get/:id', 
+  [
+    authMiddleware.authenticateToken, 
+    announceValidation.getAnnounceById
+  ], 
+  AnnounceController.getAnnounceById
+)
 
-router.put('/update/:id', announceValidation.createAnnounce, AnnounceController.updateAnnounce)
+router.post(
+  '/create', 
+  [
+    authMiddleware.authenticateToken, 
+    announceValidation.createAnnounce
+  ], 
+  AnnounceController.createAnnounce
+)
 
-router.delete('/delete/:id', announceValidation.getAnnounceById, AnnounceController.deleteAnnounce)
+router.put(
+  '/update/:id', 
+  [
+    authMiddleware.authenticateToken, 
+    announceValidation.createAnnounce
+  ], 
+  AnnounceController.updateAnnounce
+)
+
+router.delete(
+  '/delete/:id', 
+  [
+    authMiddleware.authenticateToken, 
+    announceValidation.getAnnounceById
+  ], 
+    AnnounceController.deleteAnnounce
+)
 
 module.exports = router;

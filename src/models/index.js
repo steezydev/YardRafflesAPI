@@ -25,6 +25,7 @@ db.sequelize = sequelize;
 
 db.announce = require("./announce.model.js")(sequelize, Sequelize);
 db.tags = require("./tags.model.js")(sequelize, Sequelize);
+db.admin = require("./admin.model.js")(sequelize, Sequelize);
 
 db.announce.belongsToMany(db.tags, {through: 'rel_announcements_to_tag', foreignKey: "announcements_id",});
 db.tags.belongsToMany(db.announce, {through: 'rel_announcements_to_tag', foreignKey: "tag_id",},);

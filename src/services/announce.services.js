@@ -16,7 +16,7 @@ exports.getAllAnnounces = async function () {
 
     return annouces;
   } catch (err) {
-    throw ({ status: 500, message: err.message || "Some error occurred while getting Announces." });
+    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting Announces." });
   }
 }
 
@@ -34,7 +34,7 @@ exports.getAnnounceById = async function (id) {
 
     return annouces;
   } catch (err) {
-    throw ({ status: 500, message: err.message || "Some error occurred while getting the Announce." });
+    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting the Announce." });
   }
 }
 
@@ -52,7 +52,7 @@ exports.deleteAnnounce = async function (id) {
       throw ({ status: 404, message: 'Not found in the database' });
     }
   } catch (err) {
-    throw ({ status: 500, message: err.message || "Some error occurred while getting the Announce." });
+    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting the Announce." });
   }
 }
 
@@ -71,7 +71,7 @@ exports.createAnnounce = async function (newAnnounce, tags) {
 
     return await exports.getAnnounceById(result.id);
   } catch (err) {
-    throw ({ status: 500, message: err.message || "Some error occurred while creating the Announce." });
+    throw ({ status: err.status || 500, message: err.message || "Some error occurred while creating the Announce." });
   }
 }
 
@@ -99,29 +99,6 @@ exports.updateAnnounce = async function (id, updateAnnounce, tags) {
       throw ({ status: 404, message: 'Not found in the database' });
     }
   } catch (err) {
-    throw ({ status: 500, message: err.message });
+    throw ({ status: err.status || 500, message: err.message });
   }
 }
-
-exports.addAnnounce = (tagId, annouceId) => {
-  return Tags.findByPk(tagId)
-    .then((tag) => {
-      if (!tag) {
-        console.log("Tag not found!");
-        return null;
-      }
-      return Announce.findByPk(annouceId).then((annouce) => {
-        if (!annouce) {
-          console.log("Tutorial not found!");
-          return null;
-        }
-
-        tag.addAnnounce(annouce);
-        console.log(`>> added Tutorial id=${tutorial.id} to Tag id=${tag.id}`);
-        return tag;
-      });
-    })
-    .catch((err) => {
-      console.log(">> Error while adding Tutorial to Tag: ", err);
-    });
-};
