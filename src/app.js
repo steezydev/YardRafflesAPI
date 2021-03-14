@@ -6,6 +6,8 @@ const app = express()
 
 const announceRoute = require('./routes/announce.routes')
 const adminRoute = require('./routes/admin.routes')
+const raffleRoute = require('./routes/raffle.routes')
+const userRoute = require('./routes/user.routes')
 
 app.use(helmet())
 
@@ -18,6 +20,8 @@ app.use(bodyParser.json())
 
 app.use('/api/announce', announceRoute)
 app.use('/api/admin', adminRoute)
+app.use('/api/raffle', raffleRoute)
+app.use('/api/users', userRoute)
 
 app.use((req, res, next) => {
   const error = new Error('Not found')

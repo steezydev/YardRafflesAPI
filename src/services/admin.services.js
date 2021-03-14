@@ -54,3 +54,21 @@ exports.signin = async function (loginUser) {
     throw ({ status: err.status || 500, message: err.message || "Some error occurred" });
   }
 }
+
+exports.getAdminUser = async function (userId) {
+  try {
+    let user = await Admin.findByPk(userId, { 
+      attributes: [
+        'id', 
+        'username',
+        'email',
+        'createdAt',
+        'updatedAt',
+      ] 
+    })
+
+    return user;
+  } catch (err) {
+    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting the Announce." });
+  }
+}

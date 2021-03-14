@@ -28,3 +28,14 @@ exports.signin = async (req, res, next) => {
     next(err)
   }
 };
+
+exports.getAdminUser = async (req, res, next) => {
+  let userId = req.user.id
+
+  try {
+    let user = await AdminService.getAdminUser(userId)
+    res.json({ data: user })
+  } catch (err) {
+    next(err)
+  }
+};
