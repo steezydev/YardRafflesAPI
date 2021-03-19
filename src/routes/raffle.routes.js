@@ -6,7 +6,11 @@ const raffleValidation = require('../validation/raffle.validator.js');
 const authMiddleware = require("../middleware/auth");
 
 router.get(
-  '/getRaffles',
+  '/getRaffles/:page',
+  [
+    authMiddleware.authenticateToken,
+    raffleValidation.getRaffleList
+  ],
   authMiddleware.authenticateToken,
   RaffleController.getRaffleList
 )

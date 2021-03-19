@@ -4,11 +4,12 @@ const Raffle = db.raffle;
 const Tags = db.tags;
 const User = db.user;
 const Participation = db.participation;
+const _ = require('lodash');
 
 const ParticipationService = require('../services/participation.services')
 const UserService = require('../services/user.services')
 
-exports.getRaffleList = async function () {
+exports.getRaffleList = async function (page) {
   try {
     let checkRaffles = await Raffle.count()
 
@@ -16,7 +17,10 @@ exports.getRaffleList = async function () {
       return []
     }
 
-    let raffles = await Raffle.findAll({
+    let raffles = await Raffle.findAndCountAll({
+      subQuery: false,
+      limit: 10,
+      offset: 10 * (page - 1),
       attributes: [
         'id',
         'title',
@@ -68,6 +72,8 @@ exports.getRaffleList = async function () {
         }
       ],
     })
+
+    raffles.count=_.get(raffles,'count.length');
 
     return raffles;
   } catch (err) {

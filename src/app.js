@@ -8,6 +8,10 @@ const announceRoute = require('./routes/announce.routes')
 const adminRoute = require('./routes/admin.routes')
 const raffleRoute = require('./routes/raffle.routes')
 const userRoute = require('./routes/user.routes')
+const cors = require('cors');
+
+app.use(cors());
+
 
 app.use(helmet())
 
@@ -31,6 +35,7 @@ app.use((req, res, next) => {
 
 // error handler middleware
 app.use((error, req, res, next) => {
+  console.log(error);
   res.status(error.status || 500).send({
     error: {
       status: error.status || 500,
@@ -39,7 +44,7 @@ app.use((error, req, res, next) => {
   })
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8888
 app.listen(PORT, () => {
   console.log('Server start')
 })

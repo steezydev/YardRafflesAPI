@@ -2,8 +2,10 @@ const RaffleService = require('../services/raffle.services')
 const TagsService = require('../services/tags.services')
 
 exports.getRaffleList = async function (req, res, next) {
+  let page = req.params.page
+
   try {
-    let raffles = await RaffleService.getRaffleList()
+    let raffles = await RaffleService.getRaffleList(page)
     res.json({ data: raffles })
   } catch (err) {
     next(err)
