@@ -3,8 +3,9 @@ const db = require("../models");
 const Participation = db.participation;
 const Blocked = db.blocked;
 const User = db.user;
+const _ = require('lodash');
 
-exports.getUsers = async function () {
+exports.getUsers = async function (page) {
   try {
     let checkUsers = await User.count()
 
@@ -12,7 +13,10 @@ exports.getUsers = async function () {
       return []
     }
 
-    let users = await User.findAll({
+    let users = await User.findAndCountAll({
+      subQuery: false,
+      limit: 10,
+      offset: 10 * (page - 1),
       attributes: [
         'id',
         'username',
@@ -54,6 +58,8 @@ exports.getUsers = async function () {
       ],
       group: ['id'],
     })
+
+    users.count=_.get(users,'count.length');
 
     return users;
   } catch (err) {

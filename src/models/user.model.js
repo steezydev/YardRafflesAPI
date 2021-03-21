@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.FLOAT,
     },
     telegram_link: {
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING
     },
     telegram_id: {
       type: Sequelize.INTEGER

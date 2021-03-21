@@ -6,9 +6,10 @@ const userValidation = require('../validation/user.validator.js');
 const authMiddleware = require("../middleware/auth");
 
 router.get(
-  '/getUsers', 
+  '/getUsers/:page', 
   [
     authMiddleware.authenticateToken,
+    userValidation.getUserList
   ], 
   UserController.getUsers
 )

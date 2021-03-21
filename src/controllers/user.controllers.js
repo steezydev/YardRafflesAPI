@@ -1,8 +1,10 @@
 const UserService = require('../services/user.services')
 
 exports.getUsers = async function (req, res, next) {
+  let page = req.params.page
+
   try {
-    let users = await UserService.getUsers()
+    let users = await UserService.getUsers(page)
     res.json({ data: users })
   } catch (err) {
     next(err)
