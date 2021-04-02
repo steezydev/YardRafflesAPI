@@ -1,4 +1,4 @@
-const AdminService = require('../services/admin.services')
+const AdminService = require('../services/adminServices')
 
 exports.signup = async (req, res, next) => {
   let regUser = {

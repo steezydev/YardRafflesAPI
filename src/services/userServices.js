@@ -5,7 +5,7 @@ const Blocked = db.blocked;
 const User = db.user;
 const _ = require('lodash');
 
-exports.getUsers = async function (page) {
+exports.getUsers = async function (page = 1, limit = 10, sort = 'id', sort_dir = 'desc', search = '') {
   try {
     let checkUsers = await User.count()
 
@@ -14,9 +14,17 @@ exports.getUsers = async function (page) {
     }
 
     let users = await User.findAndCountAll({
+      where: {
+        [Op.or]: [
+          {username: { [Op.like]: '%' + search + '%' }},
+          {telegram_link: { [Op.like]: '%' + search + '%' }},
+          {phone: { [Op.like]: '%' + search + '%' }},
+          {email: { [Op.like]: '%' + search + '%' }},
+        ]
+      },
       subQuery: false,
-      limit: 10,
-      offset: 10 * (page - 1),
+      limit: limit,
+      offset: limit * (page - 1),
       attributes: [
         'id',
         'username',
@@ -57,6 +65,9 @@ exports.getUsers = async function (page) {
         }
       ],
       group: ['id'],
+      order: [
+        [sort, sort_dir],
+      ]
     })
 
     users.count=_.get(users,'count.length');
@@ -194,13 +205,14 @@ exports.getRegedUsers = async function (raffleId) {
     let users = await User.findAll({
       attributes: [
         '*',
-        'participations.status',
-        'participations.reg_date',
-        'participations.successHash',
+        'participation.status',
+        'participation.reg_date',
+        'participation.successHash',
       ],
       include: [
         {
           model: Participation,
+          as: 'participation',
           where: {
             raffle_id: raffleId,
             [Op.or]: [
@@ -225,13 +237,14 @@ exports.getWinUsers = async function (raffleId) {
     let users = await User.findAll({
       attributes: [
         '*',
-        'participations.status',
-        'participations.reg_date',
-        'participations.successHash',
+        'participation.status',
+        'participation.reg_date',
+        'participation.successHash',
       ],
       include: [
         {
           model: Participation,
+          as: 'participation',
           where: {
             raffle_id: raffleId,
             status: 2

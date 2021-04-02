@@ -1,6 +1,5 @@
 const db = require("../models");
 const Admin = db.admin;
-const config = require("../config/auth.config");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -40,7 +39,7 @@ exports.signin = async function (loginUser) {
       throw ({ status: 401, message: 'Invalid password or email' })
     }
 
-    let token = jwt.sign({ id: user.id }, config.secret, {
+    let token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET, {
       expiresIn: 86400 // 24 hours
     });
 

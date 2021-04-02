@@ -1,18 +1,37 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const Announce = db.announce;
 const Tags = db.tags;
+const _ = require('lodash');
 
-exports.getAllAnnounces = async function () {
+exports.getAllAnnounces = async function (page = 1, limit = 10, sort = 'id', sort_dir = 'desc', search = '') {
   try {
-    let annouces = await Announce.findAll({
+    let annouces = await Announce.findAndCountAll({
+      where: {
+        [Op.or]: [
+          {itemTitle: { [Op.like]: '%' + search + '%' }},
+          {work_name: { [Op.like]: '%' + search + '%' }},
+          {message: { [Op.like]: '%' + search + '%' }},
+        ]
+      },
+      subQuery: false,
+      limit: limit,
+      offset: limit * (page - 1),
       include: [
         {
           model: Tags,
           as: "tags",
-          through: { attributes: [] }
+          through: { attributes: [] },
+          require: false,
         },
       ],
+      group: ['id'],
+      order: [
+        [sort, sort_dir],
+      ]
     })
+
+    annouces.count=_.get(annouces,'count.length');
 
     return annouces;
   } catch (err) {

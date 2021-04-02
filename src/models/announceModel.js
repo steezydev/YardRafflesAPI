@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-  const Raffles = sequelize.define("raffles", {
+  const Announce = sequelize.define("announcements", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
+    itemTitle: {
       type: Sequelize.STRING
     },
     work_name: {
@@ -17,28 +17,10 @@ module.exports = (sequelize, Sequelize) => {
     message: {
       type: Sequelize.TEXT
     },
-    link: {
-      type: Sequelize.TEXT
-    },
-    sizes: {
-      type: Sequelize.STRING
-    },
     publication_date: {
       type: Sequelize.DATE
     },
-    close_date: {
-      type: Sequelize.DATE,
-    },
-    results_date: {
-      type: Sequelize.DATE
-    },
-    status: {
-      type: Sequelize.INTEGER
-    },
-    profit: {
-      type: Sequelize.STRING
-    },
   });
 
-  return Raffles;
+  return Announce;
 };

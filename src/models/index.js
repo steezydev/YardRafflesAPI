@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize')
-const { dbConfig } = require("../config/db.config.js")
 
 const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.user,
-  dbConfig.password,
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: 'localhost',
+    host: process.env.DB_HOST,
     dialect: 'mysql',
-    //logging: false
+    logging: false
   }
 )
 
@@ -24,13 +23,13 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.announce = require("./announce.model.js")(sequelize, Sequelize);
-db.tags = require("./tags.model.js")(sequelize, Sequelize);
-db.admin = require("./admin.model.js")(sequelize, Sequelize);
-db.raffle = require("./raffles.model.js")(sequelize, Sequelize);
-db.user = require("./user.model.js")(sequelize, Sequelize);
-db.participation = require("./participation.model.js")(sequelize, Sequelize);
-db.blocked = require("./blocked.model.js")(sequelize, Sequelize);
+db.announce = require("./announceModel.js")(sequelize, Sequelize);
+db.tags = require("./tagModel.js")(sequelize, Sequelize);
+db.admin = require("./adminModel.js")(sequelize, Sequelize);
+db.raffle = require("./raffleModel.js")(sequelize, Sequelize);
+db.user = require("./userModel.js")(sequelize, Sequelize);
+db.participation = require("./participationModel.js")(sequelize, Sequelize);
+db.blocked = require("./blockedModel.js")(sequelize, Sequelize);
 
 db.announce.belongsToMany(db.tags, {
   through: 'rel_announcements_to_tag',

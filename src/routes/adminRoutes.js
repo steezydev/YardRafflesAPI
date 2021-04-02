@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const router = Router();
 
-const adminValidation = require('../validation/admin.validator.js');
-const AdminController = require('../controllers/admin.controllers');
+const adminValidation = require('../validation/adminValidator.js');
+const AdminController = require('../controllers/adminControllers');
 
 
 const authMiddleware = require("../middleware/auth");

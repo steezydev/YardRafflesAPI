@@ -2,6 +2,11 @@ const { check, body, validationResult } = require('express-validator');
 
 exports.getUserList = [
   check('page').exists().isInt(),
+  check('limit').optional().isInt(),
+  check('sort').optional().isString().trim().escape(),
+  check('sort_dir').optional().isString().trim().escape(),
+  check('search').optional().isString().trim().escape(),
+  
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

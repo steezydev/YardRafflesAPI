@@ -1,11 +1,18 @@
-const RaffleService = require('../services/raffle.services')
-const TagsService = require('../services/tags.services')
+const RaffleService = require('../services/raffleServices')
+const TagsService = require('../services/tagServices')
 
 exports.getRaffleList = async function (req, res, next) {
   let page = req.params.page
 
+  let 
+    limit = parseInt(req.query.limit) || 10,
+    sort = req.query.sort,
+    sort_dir = req.query.sort_dir,
+    search = req.query.search
+
+
   try {
-    let raffles = await RaffleService.getRaffleList(page)
+    let raffles = await RaffleService.getRaffleList(page, limit, sort, sort_dir, search)
     res.json({ data: raffles })
   } catch (err) {
     next(err)

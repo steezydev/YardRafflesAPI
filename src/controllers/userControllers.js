@@ -1,10 +1,16 @@
-const UserService = require('../services/user.services')
+const UserService = require('../services/userServices')
 
 exports.getUsers = async function (req, res, next) {
   let page = req.params.page
 
+  let
+    limit = parseInt(req.query.limit) || 10,
+    sort = req.query.sort,
+    sort_dir = req.query.sort_dir,
+    search = req.query.search
+
   try {
-    let users = await UserService.getUsers(page)
+    let users = await UserService.getUsers(page, limit, sort, sort_dir, search)
     res.json({ data: users })
   } catch (err) {
     next(err)

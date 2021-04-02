@@ -6,10 +6,12 @@ const User = db.user;
 const Participation = db.participation;
 const _ = require('lodash');
 
-const ParticipationService = require('../services/participation.services')
-const UserService = require('../services/user.services')
+const ParticipationService = require('./participationServices')
+const UserService = require('./userServices')
 
-exports.getRaffleList = async function (page) {
+exports.getRaffleList = async function (page = 1, limit = 10, sort = 'id', sort_dir = 'desc', search = '') {
+  console.log(sort);
+
   try {
     let checkRaffles = await Raffle.count()
 
@@ -18,12 +20,20 @@ exports.getRaffleList = async function (page) {
     }
 
     let raffles = await Raffle.findAndCountAll({
+      where: {
+        [Op.or]: [
+          {itemTitle: { [Op.like]: '%' + search + '%' }},
+          {work_name: { [Op.like]: '%' + search + '%' }},
+          {message: { [Op.like]: '%' + search + '%' }},
+          {profit: { [Op.like]: '%' + search + '%' }},
+        ]
+      },
       subQuery: false,
-      limit: 10,
-      offset: 10 * (page - 1),
+      limit: limit,
+      offset: limit * (page - 1),
       attributes: [
         'id',
-        'title',
+        'itemTitle',
         'work_name',
         'images',
         'message',
@@ -45,7 +55,7 @@ exports.getRaffleList = async function (page) {
           through: { attributes: [] },
           attributes: [
             'id',
-            'title',
+            'itemTitle',
           ],
           required: false
         },
@@ -71,9 +81,12 @@ exports.getRaffleList = async function (page) {
           required: false
         }
       ],
+      order: [
+        [sort, sort_dir],
+      ]
     })
 
-    raffles.count=_.get(raffles,'count.length');
+    raffles.count = _.get(raffles, 'count.length');
 
     return raffles;
   } catch (err) {

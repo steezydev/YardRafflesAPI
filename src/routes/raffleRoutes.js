@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const router = Router();
-const RaffleController = require('../controllers/raffle.controllers');
-const raffleValidation = require('../validation/raffle.validator.js');
+const RaffleController = require('../controllers/raffleControllers');
+const raffleValidation = require('../validation/raffleValidator.js');
 
 const authMiddleware = require("../middleware/auth");
 
@@ -11,7 +11,6 @@ router.get(
     authMiddleware.authenticateToken,
     raffleValidation.getRaffleList
   ],
-  authMiddleware.authenticateToken,
   RaffleController.getRaffleList
 )
 

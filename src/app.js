@@ -1,18 +1,18 @@
+require("dotenv").config({path:".env"})
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const app = express()
 //const cors = require("cors")
 
-const announceRoute = require('./routes/announce.routes')
-const adminRoute = require('./routes/admin.routes')
-const raffleRoute = require('./routes/raffle.routes')
-const userRoute = require('./routes/user.routes')
+const announcesRoute = require('./routes/announceRoutes')
+const adminsRoute = require('./routes/adminRoutes')
+const rafflesRoute = require('./routes/raffleRoutes')
+const usersRoute = require('./routes/userRoutes')
 const cors = require('cors');
 
 app.use(cors());
-
-
 app.use(helmet())
 
 app.use(
@@ -22,10 +22,10 @@ app.use(
 )
 app.use(bodyParser.json())
 
-app.use('/api/announce', announceRoute)
-app.use('/api/admin', adminRoute)
-app.use('/api/raffle', raffleRoute)
-app.use('/api/users', userRoute)
+app.use('/api/announces', announcesRoute)
+app.use('/api/admins', adminsRoute)
+app.use('/api/raffles', rafflesRoute)
+app.use('/api/users', usersRoute)
 
 app.use((req, res, next) => {
   const error = new Error('Not found')

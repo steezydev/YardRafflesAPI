@@ -1,9 +1,17 @@
-const AnnounceService = require('../services/announce.services')
-const TagsService  = require('../services/tags.services')
+const AnnounceService = require('../services/announceServices')
+const TagsService  = require('../services/tagServices')
 
 exports.getAllAnnounces = async function (req, res, next) {
+  let page = req.params.page
+
+  let 
+    limit = parseInt(req.query.limit) || 10,
+    sort = req.query.sort,
+    sort_dir = req.query.sort_dir,
+    search = req.query.search
+
   try {
-    let annouces = await AnnounceService.getAllAnnounces()
+    let annouces = await AnnounceService.getAllAnnounces(page, limit, sort, sort_dir, search)
     res.json({ data: annouces })
   } catch (err) {
     next(err)
