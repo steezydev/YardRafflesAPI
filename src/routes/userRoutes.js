@@ -1,54 +1,53 @@
-const {Router} = require('express')
-const router = Router();
+const { Router } = require('express')
+const router = Router()
 
-const UserController = require('../controllers/userControllers');
-const userValidation = require('../validation/userValidator.js');
-const authMiddleware = require("../middleware/auth");
+const UserController = require('../controllers/userControllers')
+const userValidation = require('../validation/userValidator.js')
+const authMiddleware = require('../middleware/auth')
 
 router.get(
-  '/getUsers/:page', 
+  '/getUsers',
   [
     authMiddleware.authenticateToken,
     userValidation.getUserList
-  ], 
+  ],
   UserController.getUsers
 )
 
-
 router.get(
-  '/get/:id', 
+  '/get/:id',
   [
-    authMiddleware.authenticateToken, 
+    authMiddleware.authenticateToken,
     userValidation.checkId
-  ], 
+  ],
   UserController.getUserById
 )
 
 router.put(
-  '/block/:id', 
+  '/block/:id',
   [
-    authMiddleware.authenticateToken, 
+    authMiddleware.authenticateToken,
     userValidation.checkBlockUser
-  ], 
+  ],
   UserController.blockUser
 )
 
 router.put(
-  '/unblock/:id', 
+  '/unblock/:id',
   [
-    authMiddleware.authenticateToken, 
+    authMiddleware.authenticateToken,
     userValidation.checkId
-  ], 
+  ],
   UserController.unblockUser
 )
 
 router.put(
-  '/accept/:id', 
+  '/accept/:id',
   [
-    authMiddleware.authenticateToken, 
+    authMiddleware.authenticateToken,
     userValidation.checkId
-  ], 
+  ],
   UserController.acceptUser
 )
 
-module.exports = router;
+module.exports = router

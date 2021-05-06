@@ -1,12 +1,12 @@
 const { Router } = require('express')
-const router = Router();
-const AnnounceController = require('../controllers/announceControllers');
-const announceValidation = require('../validation/announceValidator.js');
+const router = Router()
+const AnnounceController = require('../controllers/announceControllers')
+const announceValidation = require('../validation/announceValidator.js')
 
-const authMiddleware = require("../middleware/auth");
+const authMiddleware = require('../middleware/auth')
 
 router.get(
-  '/getAnnounces/:page',
+  '/getAnnounces',
   [
     authMiddleware.authenticateToken,
     announceValidation.getAnnouncesList
@@ -50,4 +50,4 @@ router.delete(
   AnnounceController.deleteAnnounce
 )
 
-module.exports = router;
+module.exports = router

@@ -1,12 +1,12 @@
-const { Op } = require("sequelize");
-const db = require("../models");
-const Raffle = db.raffle;
-const Participation = db.participation;
-const User = db.user;
+const { Op } = require('sequelize')
+const db = require('../models')
+// const Raffle = db.raffle
+const Participation = db.participation
+// const User = db.user
 
 exports.getCountReg = async function (raffleId) {
   try {
-    let count = await Participation.count({
+    const count = await Participation.count({
       where: {
         raffle_id: raffleId,
         [Op.or]: [
@@ -16,23 +16,25 @@ exports.getCountReg = async function (raffleId) {
       }
     })
 
-    return count;
+    return count
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting Raffles." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
   }
 }
 
 exports.getCountWin = async function (raffleId) {
   try {
-    let count = await Participation.count({
+    const count = await Participation.count({
       where: {
         raffle_id: raffleId,
         status: 2
       }
     })
 
-    return count;
+    return count
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred while getting Raffles." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
   }
 }

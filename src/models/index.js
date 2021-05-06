@@ -18,74 +18,72 @@ sequelize
 
 module.exports = sequelize
 
-const db = {};
+const db = {}
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+db.Sequelize = Sequelize
+db.sequelize = sequelize
 
-db.announce = require("./announceModel.js")(sequelize, Sequelize);
-db.tags = require("./tagModel.js")(sequelize, Sequelize);
-db.admin = require("./adminModel.js")(sequelize, Sequelize);
-db.raffle = require("./raffleModel.js")(sequelize, Sequelize);
-db.user = require("./userModel.js")(sequelize, Sequelize);
-db.participation = require("./participationModel.js")(sequelize, Sequelize);
-db.blocked = require("./blockedModel.js")(sequelize, Sequelize);
+db.announce = require('./announceModel.js')(sequelize, Sequelize)
+db.tags = require('./tagModel.js')(sequelize, Sequelize)
+db.admin = require('./adminModel.js')(sequelize, Sequelize)
+db.raffle = require('./raffleModel.js')(sequelize, Sequelize)
+db.user = require('./userModel.js')(sequelize, Sequelize)
+db.participation = require('./participationModel.js')(sequelize, Sequelize)
+db.blocked = require('./blockedModel.js')(sequelize, Sequelize)
 
 db.announce.belongsToMany(db.tags, {
   through: 'rel_announcements_to_tag',
-  foreignKey: "announcements_id",
-});
+  foreignKey: 'announcements_id'
+})
 
 db.tags.belongsToMany(db.announce, {
   through: 'rel_announcements_to_tag',
-  foreignKey: "tag_id",
-});
+  foreignKey: 'tag_id'
+})
 
 db.raffle.belongsToMany(db.tags, {
   through: 'rel_raffles_to_tag',
-  foreignKey: "raffle_id",
-});
+  foreignKey: 'raffle_id'
+})
 
 db.tags.belongsToMany(db.raffle, {
   through: 'rel_raffles_to_tag',
-  foreignKey: "tag_id",
-});
+  foreignKey: 'tag_id'
+})
 
 db.raffle.belongsToMany(db.user, {
   through: 'participations',
-  foreignKey: "raffle_id",
-});
+  foreignKey: 'raffle_id'
+})
 
 db.user.belongsToMany(db.raffle, {
   through: 'participations',
-  foreignKey: "user_id",
-});
+  foreignKey: 'user_id'
+})
 
-db.raffle.hasMany(db.participation, { 
-  as: "participation" ,
-  foreignKey : 'raffle_id'
-});
+db.raffle.hasMany(db.participation, {
+  as: 'participation',
+  foreignKey: 'raffle_id'
+})
 
-db.raffle.hasMany(db.participation, { 
-  as: "participation2" ,
-  foreignKey : 'raffle_id'
-});
+db.raffle.hasMany(db.participation, {
+  as: 'participation2',
+  foreignKey: 'raffle_id'
+})
 
-db.user.hasMany(db.participation, { 
-  as: "participation" ,
-  foreignKey : 'user_id'
-});
+db.user.hasMany(db.participation, {
+  as: 'participation',
+  foreignKey: 'user_id'
+})
 
-db.user.hasMany(db.participation, { 
-  as: "participation2" ,
-  foreignKey : 'user_id'
-});
+db.user.hasMany(db.participation, {
+  as: 'participation2',
+  foreignKey: 'user_id'
+})
 
-db.user.hasMany(db.blocked, { 
-  as: "blocks" ,
-  foreignKey : 'user_id'
-});
+db.user.hasMany(db.blocked, {
+  as: 'blocks',
+  foreignKey: 'user_id'
+})
 
-
-
-module.exports = db;
+module.exports = db

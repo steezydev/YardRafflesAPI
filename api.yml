@@ -1,0 +1,1468 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: YardRaffles
+servers:
+  - url: 'http://localhost:8888'
+paths:
+  # AUTH START
+  /api/admin/signin:
+    post:
+      tags:
+        - admin
+      summary: "Авторизация"
+      operationId: userAuthorization
+      description: "Авторизация пользователя"
+      requestBody:
+          content:
+            application/json:
+                schema:
+                    $ref: '#/components/schemas/SignInBody'
+      responses:
+        200:
+          description: "Пользователь найден в БД"
+          content: 
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/AuthData'
+        404:
+          description: "Пользователь не найден в БД"
+          
+  /api/admin/getAdminUser:
+    post:
+      tags:
+        - admin
+      summary: "Получить информацию о пользователе"
+      operationId: getAdminUser
+      parameters:
+      - name: authorization
+        in: header
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+            format: hash
+      - name: email
+        in: query
+        required: true
+        schema:
+            type: integer
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+  # AUTH END
+  
+  # BOT START
+  /api/bot/getUser/{telegramId}:
+    get:
+      tags:
+        - bot
+      summary: "Получить информацию о пользователе"
+      operationId: getBotUser
+      parameters:
+      - name: Authorization
+        in: header
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - name: telegramId
+        in: path
+        required: true
+        description: telegram_id пользователя
+        schema:
+            type: integer
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+  
+  /api/bot/addUser:
+    post:
+      tags:
+        - bot
+      summary: "Добавляет нового пользователя в боте"
+      operationId: addBotUser
+      parameters:
+      - name: Authorization
+        in: header
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - name: username
+        in: query
+        required: true
+        schema:
+            type: string
+      - name: telegram_link
+        in: query
+        required: true
+        schema:
+            type: string
+      - in: query
+        name: phone
+        required: false
+        schema:
+            type: string
+      - in: query
+        name: email
+        schema:
+            type: string
+        required: false
+      - in: query
+        name: telegramId
+        schema:
+            type: integer
+        required: true
+        description: telegram_id пользователя
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+  
+  /api/bot/updateUser/{telegramId}:
+    put:
+      tags:
+        - bot
+      summary: "Обновляет информацию пользователя в боте"
+      operationId: updateBotUser
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: query
+        name: username
+        schema:
+            type: string
+        required: true
+      - in: query
+        name: telegram_link
+        schema:
+            type: string
+        required: true
+      - in: query
+        name: phone
+        schema:
+            type: string
+        required: false
+      - in: query
+        name: email
+        schema:
+            type: string
+        required: false
+      - in: path
+        name: telegramId
+        schema:
+            type: integer
+        required: true
+        description: telegram_id пользователя
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+          
+  /api/bot/getRafflesToPost:
+    get:
+      tags:
+        - bot
+      summary: "Получает список раффлов для публикации"
+      operationId: getBotRafflesToPost
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+                schema:
+                    type: object
+                    properties:
+                        data:
+                            type: array
+                            items:
+                                $ref: '#/definitions/BotRaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Раффл не найден в БД"
+          
+  /api/bot/getCurrentRaffles:
+    get:
+      tags:
+        - bot
+      summary: "Получает список текущих раффлов"
+      operationId: getBotCurrentRaffles
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                        type: array
+                        items:
+                            $ref: '#/definitions/BotRaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Раффл не найден в БД"
+          
+  /api/bot/getRaffle/{id}:
+    get:
+      tags:
+        - bot
+      summary: "Получает раффл"
+      operationId: getRaffle
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: path
+        name: id
+        schema:
+            type: integer
+        required: true
+        description: id раффла
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BotRaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Раффл не найден в БД"
+          
+  /api/bot/addPartRaffle/{id}:
+    post:
+      tags:
+        - bot
+      summary: "Регестрирует на раффл"
+      operationId: addPartRaffle
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: query
+        name: telegramId
+        schema:
+            type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+            type: integer
+        required: true
+        description: id раффла
+      responses:
+        200:
+          description: "Успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  
+  /api/bot/confirmParticipation/{id}:
+    put:
+      tags:
+        - bot
+      summary: "Обновляет статус записи"
+      operationId: confirmParticipation
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: query
+        name: telegramId
+        schema:
+            type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+            type: integer
+        required: true
+        description: id раффла
+      responses:
+        200:
+          description: "Успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/bot/confirmSuccess/{id}:
+    put:
+      tags:
+        - bot
+      summary: "Обновляет статус записи"
+      operationId: confirmSuccess
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: query
+        name: telegramId
+        schema:
+            type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+            type: integer
+        required: true
+        description: id раффла
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/SuccessData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  # BOT END
+  
+  # USERS START
+  /api/users/get/{id}:
+    get:
+      tags:
+        - users
+      summary: "Получить информацию о пользователе"
+      operationId: getUserById
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        schema:
+            type: string
+      - in: path
+        name: id
+        schema:
+            type: integer
+        required: true
+        description: id пользователя
+      responses:
+        200:
+          description: "Объект с записью"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+          
+  /api/users/getUsers/{page}:
+    get:
+      tags:
+        - users
+      summary: "Получить список пользователей"
+      operationId: getAllUser
+      parameters:
+      - in: path
+        name: page
+        type: integer
+        required: true
+        description: Страница
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: search
+        description: "Поисковое слово"
+        required: false
+        type: string
+      - in: query
+        name: telegram_link
+        description: "@x_honey_x"
+        required: false
+        type: string
+      - in: query
+        name: invite
+        description: "Id пригласившего"
+        required: false
+        type: integer
+      - in: query
+        name: raffles
+        required: false
+        description: "Массив раффлов в которых участвовал пользователь"
+        type: array
+        items:
+          type: integer
+      - in: query
+        name: sort
+        type: string
+        required: false
+        description: "Параметр сортировки. Столбец, по которому нужна сортировка. Например, date_s."
+      - in: query
+        name: sort_dir
+        type: string
+        required: false
+        description: "Тип сортировки: asc или desc"
+      - in: query
+        name: page
+        type: integer
+        required: false
+        description: "Страница выдачи. Шаг - 20 записей"
+      responses:
+        200:
+          description: "Объект с записью"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/UserData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Пользователь не найден в БД"
+          
+          
+  /api/users/block/{id}:
+    put:
+      tags:
+      - users
+      summary: Заблокировать пользователя
+      operationId: blockUser
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: reason
+        type: string
+        required: true
+        description: "Goofy ski ski"
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id пользователя
+        
+      responses:
+        200:
+          description: "Операция прошла успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/users/unblock/{id}:
+    put:
+      tags:
+      - users
+      summary: Разблокировать пользователя
+      operationId: unblockUser
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id пользователя
+        
+      responses:
+        200:
+          description: "Операция прошла успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/users/accept/{id}:
+    put:
+      tags:
+      - users
+      summary: Подтверждает регистрацию пользователя
+      operationId: acceptUser
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id пользователя
+        
+      responses:
+        200:
+          description: "Операция прошла успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  
+  # USERS END
+  
+  # RAFFLES START
+  /api/raffles/get/{id}:
+    get:
+      tags:
+      - raffles
+      summary: Получить информацию о раффле
+      operationId: getRaffleData
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: id раффла
+        
+      responses:
+        200:
+          description: "Объект с информацией о раффле"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/RaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Раффл не найден"
+          
+  /api/raffles/create:
+    post:
+      tags:
+      - raffles
+      summary: Создать раффл
+      operationId: createRaffle
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: title
+        type: string
+        required: true
+        description: "Название"
+      - in: query
+        name: work_name
+        type: string
+        required: true
+        description: "Рабочее название"
+      - in: query
+        name: images
+        type: string
+        required: false
+        description: "Hash изображения"
+      - in: query
+        name: message
+        type: string
+        required: true
+        description: "Сообщение в боте"
+      - in: query
+        name: link
+        type: string
+        required: true
+        description: "Ссылка на раффл"
+      - in: query
+        name: sizes
+        type: string
+        required: false
+        description: "Список размеров"
+      - in: query
+        name: publication_date
+        type: string
+        required: false
+        description: "Время публикации (если не указано, то сразу)"
+      - in: query
+        name: close_date
+        type: string
+        required: false
+        description: "Время закртия регистрации на раффл (если не указано, то закрывать вручную)"
+      - in: query
+        name: results_date
+        type: string
+        required: false
+        description: "Время сообщения результатов"
+      - in: query
+        name: profit
+        type: number
+        required: false
+        description: "Возможная прибыль"
+      - in: body
+        name: tags
+        required: false
+        description: "Массив объектов id тэгов"
+        schema:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+      
+      responses:
+        200:
+          description: "Объект с созданной записью"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/RaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/raffles/update/{id}:
+    put:
+      tags:
+      - raffles
+      summary: Обновить раффл
+      operationId: updateRaffle
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id раффла
+      - in: query
+        name: title
+        type: string
+        required: true
+        description: "Название"
+      - in: query
+        name: work_name
+        type: string
+        required: true
+        description: "Рабочее название"
+      - in: query
+        name: images
+        type: string
+        required: false
+        description: "Hash изображения"
+      - in: query
+        name: message
+        type: string
+        required: true
+        description: "Сообщение в боте"
+      - in: query
+        name: link
+        type: string
+        required: true
+        description: "Ссылка на раффл"
+      - in: query
+        name: sizes
+        type: string
+        required: false
+        description: "Список размеров"
+      - in: query
+        name: publication_date
+        type: string
+        required: false
+        description: "Время публикации (если не указано, то сразу)"
+      - in: query
+        name: close_date
+        type: string
+        required: false
+        description: "Время закртия регистрации на раффл (если не указано, то закрывать вручную)"
+      - in: query
+        name: results_date
+        type: string
+        required: false
+        description: "Время сообщения результатов"
+      - in: query
+        name: profit
+        type: number
+        required: false
+        description: "Возможная прибыль"
+      - in: body
+        name: tags
+        required: false
+        description: "Массив объектов id тэгов"
+        schema:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+      responses:
+        200:
+          description: "Объект с созданной записью"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/RaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/raffles/delete/{id}:
+    delete:
+      tags:
+      - raffles
+      summary: Удалить запись раффла
+      operationId: deleteRaffle
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id записи
+        
+      responses:
+        200:
+          description: "Операция прошла успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/raffles/getRaffles/{page}:
+    get:
+      tags:
+      - raffles
+      summary: "Список раффлов"
+      operationId: getRaffleList
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: page
+        type: integer
+        required: true
+        description: Страница
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: search
+        description: "Поисковое слово"
+        required: false
+        type: string
+      - in: query
+        name: date_from
+        description: "ГГГГ-ММ-ДД"
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        description: "ГГГГ-ММ-ДД"
+        required: false
+        type: string
+      - in: query
+        name: status
+        required: false
+        description: "Массив статусов"
+        type: array
+        items:
+          type: integer
+      - in: query
+        name: users
+        required: false
+        description: "Массив пользователей"
+        type: array
+        items:
+          type: integer
+      - in: query
+        name: sort
+        type: string
+        required: false
+        description: "Параметр сортировки. Столбец, по которому нужна сортировка. Например, date_s."
+      - in: query
+        name: sort_dir
+        type: string
+        required: false
+        description: "Тип сортировки: asc или desc"
+      responses:
+        200:
+          description: "Массив билетов. Если записей нет, то выдаем пустой массив"
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+                example: 12
+              rows:
+                type: array
+                items:
+                  $ref: '#/definitions/CommonRaffleData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  # RAFFLES END
+  
+  # ANNOUCE START
+  /api/announces/get/{id}:
+    get:
+      tags:
+      - announcements
+      summary: Получить информацию об объявлении
+      operationId: getAnnounceData
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) д. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: id объялвения
+        
+      responses:
+        200:
+          description: "Объект с информацией об объялвении"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/AnnounceData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+        404:
+          description: "Объялвение не найдено"
+  
+  /api/announces/create:
+    post:
+      tags:
+      - announcements
+      summary: Создать объялвение
+      operationId: createAnnounce
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: title
+        type: string
+        required: true
+        description: "Название"
+      - in: query
+        name: work_name
+        type: string
+        required: true
+        description: "Рабочее название"
+      - in: query
+        name: images
+        type: string
+        required: false
+        description: "Hash изображения"
+      - in: query
+        name: message
+        type: string
+        required: true
+        description: "Сообщение в боте"
+      - in: query
+        name: publication_date
+        type: string
+        required: false
+        description: "Время публикации (если не указано, то сразу)"
+      - in: body
+        name: tags
+        required: false
+        description: "Массив объектов id тэгов"
+        schema:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+      responses:
+        200:
+          description: "Объект с созданной записью"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/AnnounceData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/announces/update/{id}:
+    put:
+      tags:
+      - announcements
+      summary: Обновить объялвение
+      operationId: updateAnnounce
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id раффла
+      - in: query
+        name: title
+        type: string
+        required: true
+        description: "Название"
+      - in: query
+        name: work_name
+        type: string
+        required: true
+        description: "Рабочее название"
+      - in: query
+        name: images
+        type: string
+        required: false
+        description: "Hash изображения"
+      - in: query
+        name: message
+        type: string
+        required: true
+        description: "Сообщение в боте"
+      - in: query
+        name: publication_date
+        type: string
+        required: false
+        description: "Время публикации (если не указано, то сразу)"
+      - in: body
+        name: tags
+        required: false
+        description: "Массив объектов id тэгов"
+        schema:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+      responses:
+        200:
+          description: "Объект с созданной записью"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/AnnounceData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+          
+  /api/announces/delete/{id}:
+    delete:
+      tags:
+      - announcements
+      summary: Удалить запись объялвения
+      operationId: deleteAnnounce
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        required: true
+        description: Id записи
+        
+      responses:
+        200:
+          description: "Операция прошла успешно"
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  
+  /api/announces/getAnnounces{page}:
+    get:
+      tags:
+      - announcements
+      summary: "Список объялвений"
+      operationId: getAnnounceList
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: page
+        type: integer
+        required: true
+        description: Страница
+      - in: header
+        name: Authorization
+        description: "hash пользователя (токен авторизации) для расчета стоимости индивидуального посещения. Пример: Bearer c4ca4238a0b923820dcc509a6f75849b"
+        required: true
+        type: string
+      - in: query
+        name: search
+        description: "Поисковое слово"
+        required: false
+        type: string
+      - in: query
+        name: date_from
+        description: "ГГГГ-ММ-ДД"
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        description: "ГГГГ-ММ-ДД"
+        required: false
+        type: string
+      - in: query
+        name: sort
+        type: string
+        required: false
+        description: "Параметр сортировки. Столбец, по которому нужна сортировка. Например, date_s."
+      - in: query
+        name: sort_dir
+        type: string
+        required: false
+        description: "Тип сортировки: asc или desc"
+      - in: query
+        name: page
+        type: integer
+        required: false
+        description: "Страница выдачи. Шаг - 20 записей"
+      responses:
+        200:
+          description: "Массив билетов. Если записей нет, то выдаем пустой массив"
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+                example: 12
+              rows:
+                type: array
+                items:
+                  $ref: '#/definitions/AnnounceData'
+        401:
+          description: "Токен не отправлен или пользователь с таким токеном не найден в БД"
+  # ANNOUCE END
+  
+components:  
+    schemas:
+        SignInBody:
+            type: object
+            properties:
+                login:
+                    description: "логин пользователя"
+                    type: string
+                password:
+                    description: "пароль пользователя"
+                    type: string
+
+
+        BotRaffleData:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                title:
+                    type: string
+                    example: 'Nike Off-White'
+                images:
+                    type: string
+                    example: ''
+                message:
+                    type: string
+                    example: 'Очень важный релиз. За регистрацию даем двойное вознаграждение'
+                link:
+                    type: string
+                    example: 'https://github.com/swagger-api/swagger-editor'
+                sizes:
+                    type: string
+                    example: '8 US, 9 US'
+                publication_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                close_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                results_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                status:
+                    type: integer
+                    example: 1
+                profit:
+                    type: number
+                    example: 5000
+                tags:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 1
+                            name:
+                                type: string
+                                example: 'Кросовки'
+
+        CommonRaffleData:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                title:
+                    type: string
+                    example: 'Nike Off-White'
+                work_name:
+                    type: string
+                    example: 'Nikeeee'
+                images:
+                    type: string
+                    example: ''
+                message:
+                    type: string
+                    example: 'Очень важный релиз. За регистрацию даем двойное вознаграждение'
+                link:
+                    type: string
+                    example: 'https://github.com/swagger-api/swagger-editor'
+                sizes:
+                    type: string
+                    example: '8 US, 9 US'
+                publication_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                close_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                results_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                status:
+                    type: integer
+                    example: 1
+                profit:
+                    type: number
+                    example: 5000
+                reg_count:
+                    type: integer
+                    example: 125
+                win_count:
+                    type: integer
+                    example: 0
+                tags:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 1
+                            name:
+                                type: string
+                                example: 'Кросовки'
+                    
+        RaffleData:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                title:
+                    type: string
+                    example: 'Nike Off-White'
+                work_name:
+                    type: string
+                    example: 'Nikeeee'
+                images:
+                    type: string
+                    example: ''
+                message:
+                    type: string
+                    example: 'Очень важный релиз. За регистрацию даем двойное вознаграждение'
+                link:
+                    type: string
+                    example: 'https://github.com/swagger-api/swagger-editor'
+                sizes:
+                    type: string
+                    example: '8 US, 9 US'
+                publication_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                close_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                results_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                status:
+                    type: integer
+                    example: 1
+                profit:
+                    type: number
+                    example: 5000
+                reg_count:
+                    type: integer
+                    example: 125
+                win_count:
+                    type: integer
+                    example: 0
+                tags:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 1
+                            name:
+                                type: string
+                                example: 'Кросовки'
+                reg_users:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 2
+                            username:
+                                type: string
+                                example: 'Гошан'
+                            telegram_link:
+                                type: string
+                                example: '@x_honey_x'
+                            telegram_id:
+                                type: integer
+                                example: 1234567879
+                            invited_id:
+                                type: integer
+                                example: 1
+                            phone:
+                                type: integer
+                                example: 793212882435
+                            email:
+                                type: string
+                                example: 'swggNuko@gmail.com'
+                            user_rank:
+                                type: integer
+                                example: 89
+                            date_register:
+                                type: string
+                                example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                            status:
+                                type: integer
+                                example: 1
+                win_users:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 2
+                            username:
+                                type: string
+                                example: 'Гошан'
+                            telegram_link:
+                                type: string
+                                example: '@x_honey_x'
+                            telegram_id:
+                                type: integer
+                                example: 1234567879
+                            invited_id:
+                                type: integer
+                                example: 1
+                            phone:
+                                type: integer
+                                example: 793212882435
+                            email:
+                                type: string
+                                example: 'swggNuko@gmail.com'
+                            user_rank:
+                                type: integer
+                                example: 89
+                            date_register:
+                                type: string
+                                example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                            status:
+                                type: integer
+                                example: 2
+        
+        AnnounceData:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                title:
+                    type: string
+                    example: 'Важное объяление!'
+                work_name:
+                    type: string
+                    example: 'Найки'
+                images:
+                    type: string
+                    example: ''
+                message:
+                    type: string
+                    example: 'Очень важный релиз. За регистрацию даем двойное вознаграждение'
+                publication_date:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                tags:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                example: 1
+                            name:
+                                type: string
+                                example: 'Кросовки'
+        
+        SuccessData:
+            type: object
+            properties:
+                hash:
+                    type: string
+                    example: 1
+                
+        UserData:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 2
+                username:
+                    type: string
+                    example: 'Гошан'
+                telegram_link:
+                    type: string
+                    example: '@x_honey_x'
+                telegram_id:
+                    type: integer
+                    example: 1234567879
+                invited_id:
+                    type: integer
+                    example: 1
+                phone:
+                    type: integer
+                    example: 793212882435
+                email:
+                    type: string
+                    example: 'swggNuko@gmail.com'
+                user_rank:
+                    type: integer
+                    example: 89
+                date_register:
+                    type: string
+                    example: 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'
+                accepted:
+                    type: integer
+                    example: 1
+                is_blocked:
+                    type: integer
+                    example: 0
+                    
+                    
+        AuthData:
+            type: object
+            required:
+                - data
+            properties:
+                data:
+                    type: object
+                    required:
+                        - id
+                        - name
+                        - login
+                        - token
+                    properties:
+                        id:
+                            type: integer
+                            example: 1
+                        name:
+                            type: string
+                            example: 'Гошан'
+                        login:
+                            type: string
+                            example: 'admin'
+                        token:
+                            type: string
+                            example: '202cb962ac59075b964b07152d234b70'

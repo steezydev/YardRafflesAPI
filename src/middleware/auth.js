@@ -1,14 +1,14 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 
 exports.authenticateToken = async function (req, res, next) {
-  const authHeader = req.headers['authorization']
+  const authHeader = req.headers.authorization
   const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) {
+  if (token === null) {
     return res.status(401).send({
       error: {
         status: 401,
-        message: 'Unauthorized',
-      },
+        message: 'Unauthorized'
+      }
     })
   }
 
@@ -17,12 +17,12 @@ exports.authenticateToken = async function (req, res, next) {
       return res.status(401).send({
         error: {
           status: 401,
-          message: 'Unauthorized',
-        },
+          message: 'Unauthorized'
+        }
       })
     }
 
     req.user = user
-    next();
-  });
-};
+    next()
+  })
+}

@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-  const Raffles = sequelize.define("raffles", {
+  const Raffles = sequelize.define('raffles', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     itemTitle: {
       type: Sequelize.STRING
@@ -26,8 +26,11 @@ module.exports = (sequelize, Sequelize) => {
     publication_date: {
       type: Sequelize.DATE
     },
+    publish: {
+      type: Sequelize.INTEGER
+    },
     close_date: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATE
     },
     results_date: {
       type: Sequelize.DATE
@@ -37,8 +40,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     profit: {
       type: Sequelize.STRING
-    },
-  });
+    }
+  })
 
-  return Raffles;
-};
+  return Raffles
+}

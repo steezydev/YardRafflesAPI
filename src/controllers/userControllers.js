@@ -1,16 +1,14 @@
 const UserService = require('../services/userServices')
 
 exports.getUsers = async function (req, res, next) {
-  let page = req.params.page
-
-  let
-    limit = parseInt(req.query.limit) || 10,
-    sort = req.query.sort,
-    sort_dir = req.query.sort_dir,
-    search = req.query.search
+  const page = parseInt(req.query.page)
+  const limit = parseInt(req.query.limit) || 10
+  const sort = req.query.sort
+  const sortDir = req.query.sort_dir
+  const search = req.query.search
 
   try {
-    let users = await UserService.getUsers(page, limit, sort, sort_dir, search)
+    const users = await UserService.getUsers(page, limit, sort, sortDir, search)
     res.json({ data: users })
   } catch (err) {
     next(err)
@@ -18,10 +16,10 @@ exports.getUsers = async function (req, res, next) {
 }
 
 exports.getUserById = async function (req, res, next) {
-  let id = req.params.id
+  const id = req.params.id
 
   try {
-    let user = await UserService.getUserById(id)
+    const user = await UserService.getUserById(id)
     res.json({ data: user })
   } catch (err) {
     next(err)
@@ -29,37 +27,37 @@ exports.getUserById = async function (req, res, next) {
 }
 
 exports.blockUser = async function (req, res, next) {
-  let id = req.params.id
-  let block = {
-    "user_id": id,
-    "reason": req.query.reason,
-    "admin_blocking": req.user.id,
+  const id = req.params.id
+  const block = {
+    user_id: id,
+    reason: req.query.reason,
+    admin_blocking: req.user.id
   }
 
   try {
-    let user = await UserService.blockUser(id, block);
-    res.json({ data: user })
+    await UserService.blockUser(id, block)
+    res.json({ data: 1 })
   } catch (err) {
     next(err)
   }
 }
 
 exports.unblockUser = async function (req, res, next) {
-  let id = req.params.id
+  const id = req.params.id
 
   try {
-    let user = await UserService.unblockUser(id);
-    res.json({ data: user })
+    await UserService.unblockUser(id)
+    res.json({ data: 1 })
   } catch (err) {
     next(err)
   }
 }
 
 exports.acceptUser = async function (req, res, next) {
-  let id = req.params.id
+  const id = req.params.id
 
   try {
-    let user = await UserService.acceptUser(id);
+    const user = await UserService.acceptUser(id)
     res.json({ data: user })
   } catch (err) {
     next(err)

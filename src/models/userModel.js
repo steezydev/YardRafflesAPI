@@ -1,23 +1,23 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("users", {
+  const User = sequelize.define('users', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     username: {
       type: Sequelize.STRING
     },
     balance: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.FLOAT
     },
-    telegram_link: {
+    telegramLink: {
       type: Sequelize.STRING
     },
-    telegram_id: {
+    telegramId: {
       type: Sequelize.INTEGER
     },
-    invited_id: {
+    invitedId: {
       type: Sequelize.INTEGER
     },
     phone: {
@@ -26,10 +26,10 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     },
-    user_rank: {
+    userRank: {
       type: Sequelize.INTEGER
     },
-    date_register: {
+    dateRegister: {
       type: Sequelize.DATE
     },
     accepted: {
@@ -37,8 +37,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     blocked: {
       type: Sequelize.INTEGER
-    },
-  });
+    }
+  })
 
-  return User;
-};
+  return User
+}

@@ -1,45 +1,43 @@
-const { Op } = require("sequelize");
-const db = require("../models");
-const Participation = db.participation;
-const Blocked = db.blocked;
-const User = db.user;
-const _ = require('lodash');
+const { Op } = require('sequelize')
+const db = require('../models')
+const Participation = db.participation
+const Blocked = db.blocked
+const User = db.user
+const _ = require('lodash')
 
-exports.getUsers = async function (page = 1, limit = 10, sort = 'id', sort_dir = 'desc', search = '') {
+exports.getUsers = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
   try {
-    let checkUsers = await User.count()
+    const checkUsers = await User.count()
 
     if (!checkUsers) {
       return []
     }
 
-    let users = await User.findAndCountAll({
+    const options = {
       where: {
         [Op.or]: [
-          {username: { [Op.like]: '%' + search + '%' }},
-          {telegram_link: { [Op.like]: '%' + search + '%' }},
-          {phone: { [Op.like]: '%' + search + '%' }},
-          {email: { [Op.like]: '%' + search + '%' }},
+          { username: { [Op.like]: '%' + search + '%' } },
+          { telegramLink: { [Op.like]: '%' + search + '%' } },
+          { phone: { [Op.like]: '%' + search + '%' } },
+          { email: { [Op.like]: '%' + search + '%' } }
         ]
       },
       subQuery: false,
-      limit: limit,
-      offset: limit * (page - 1),
       attributes: [
         'id',
         'username',
         'balance',
-        'telegram_link',
-        'telegram_id',
-        'invited_id',
+        'telegramLink',
+        'telegramId',
+        'invitedId',
         'phone',
         'email',
-        'user_rank',
-        'date_register',
+        'userRank',
+        'dateRegister',
         'accepted',
         'blocked',
         [db.sequelize.fn('COUNT', db.sequelize.col('participation.id')), 'reg_count'],
-        [db.sequelize.fn('COUNT', db.sequelize.col('participation2.id')), 'win_count'],
+        [db.sequelize.fn('COUNT', db.sequelize.col('participation2.id')), 'win_count']
       ],
       include: [
         {
@@ -58,7 +56,7 @@ exports.getUsers = async function (page = 1, limit = 10, sort = 'id', sort_dir =
           model: Participation,
           as: 'participation2',
           where: {
-            status: 2,
+            status: 2
           },
           attributes: [],
           required: false
@@ -66,148 +64,190 @@ exports.getUsers = async function (page = 1, limit = 10, sort = 'id', sort_dir =
       ],
       group: ['id'],
       order: [
-        [sort, sort_dir],
+        [sort, sortDir]
       ]
-    })
+    }
 
-    users.count=_.get(users,'count.length');
+    if (limit !== undefined) {
+      options.limit = limit
+    }
 
-    return users;
+    if (limit !== undefined && page !== undefined) {
+      options.offset = limit * (page - 1)
+    }
+
+    const users = await User.findAndCountAll(options)
+
+    users.count = _.get(users, 'count.length')
+
+    return users
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.getUserById = async function (id) {
   try {
-    let user = await User.findByPk(id, {
+    const user = await User.findByPk(id, {
       include: [
         {
           model: Blocked,
-          as: "blocks",
+          as: 'blocks',
           attributes: ['admin_blocking', 'reason', 'unblocked', 'createdAt', 'updatedAt']
-        },
+        }
       ]
     })
 
-    return user;
+    if (!user) {
+      const errorMessage = { status: 404, message: 'User not found' }
+      throw errorMessage
+    }
+
+    return user
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.blockUser = async function (id, block) {
   try {
-    let user = await exports.getUserById(id)
+    const user = await exports.getUserById(id)
 
     if (!user) {
-      throw ({ status: 404, message: "User not found" });
+      const errorMessage = { status: 404, message: 'User not found' }
+      throw errorMessage
     }
 
-    let isBlocked = await Blocked.count({
+    const isBlocked = await Blocked.count({
       where: {
         user_id: id,
-        unblocked: 0,
+        unblocked: 0
       }
     })
 
     if (isBlocked) {
-      throw ({ status: 400, message: "User is already blocked" });
+      const errorMessage = { status: 400, message: 'User is already blocked' }
+      throw errorMessage
     }
 
     const result = await db.sequelize.transaction(async (t) => {
-
-     await Blocked.create(block, {
+      await Blocked.create(block, {
         transaction: t
       })
 
-      const res = await User.update({ "blocked": 1 }, {
+      const res = await User.update({ blocked: 1 }, {
         where: {
           id: id
         },
         transaction: t
       })
 
-      return 1;
-    });
+      if (res === 1) {
+        return 1
+      }
+    })
 
-
-    return result;
+    return result
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.unblockUser = async function (id) {
   try {
-    let isBlocked = await Blocked.count({
+    const isBlocked = await Blocked.count({
       where: {
         user_id: id,
-        unblocked: 0,
+        unblocked: 0
       }
     })
 
+    console.log(isBlocked)
+
     if (!isBlocked) {
-      throw ({ status: 400, message: "User is not blocked" });
+      const errorMessage = { status: 400, message: 'User is not blocked' }
+      throw errorMessage
     }
 
     const result = await db.sequelize.transaction(async (t) => {
-      const res = await Blocked.update({ "unblocked": 1 }, {
+      const res = await Blocked.update({ unblocked: 1 }, {
         where: {
-          user_id: id
+          user_id: id,
+          unblocked: 0
         },
         transaction: t,
         limit: 1
       })
 
-      await User.update({ "blocked": 0 }, {
+      await User.update({ blocked: 0 }, {
         where: {
           id: id
         },
         transaction: t
       })
 
-      return res;
-    });
+      return res
+    })
 
-    if (result == 1) {
+    if (result[0] === 1) {
       return 1
     } else {
-      throw ({ status: 500, message: 'Error occured' });
+      const errorMessage = { status: 500, message: 'Error occured' }
+      throw errorMessage
     }
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.acceptUser = async function (id) {
   try {
-    let user = await User.findByPk(id)
+    const isAccepted = await User.count({
+      where: {
+        id: id,
+        accepted: 0
+      }
+    })
 
-    accept = {
-      "accepted": 1
+    if (!isAccepted) {
+      const errorMessage = { status: 400, message: 'User is already accepted' }
+      throw errorMessage
+    }
+
+    const accept = {
+      accepted: 1
     }
 
     const res = await User.update(accept, {
       where: {
         id: id
-      },
+      }
     })
 
-    return 1;
+    if (res[0] === 1) {
+      return 1
+    } else {
+      const errorMessage = { status: 500, message: 'Error occured' }
+      throw errorMessage
+    }
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.getRegedUsers = async function (raffleId) {
   try {
-    let users = await User.findAll({
+    const users = await User.findAll({
       attributes: [
         '*',
         'participation.status',
         'participation.reg_date',
-        'participation.successHash',
+        'participation.successHash'
       ],
       include: [
         {
@@ -226,20 +266,21 @@ exports.getRegedUsers = async function (raffleId) {
       raw: true
     })
 
-    return users;
+    return users
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }
 
 exports.getWinUsers = async function (raffleId) {
   try {
-    let users = await User.findAll({
+    const users = await User.findAll({
       attributes: [
         '*',
         'participation.status',
         'participation.reg_date',
-        'participation.successHash',
+        'participation.successHash'
       ],
       include: [
         {
@@ -255,8 +296,9 @@ exports.getWinUsers = async function (raffleId) {
       raw: true
     })
 
-    return users;
+    return users
   } catch (err) {
-    throw ({ status: err.status || 500, message: err.message || "Some error occurred." });
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
   }
 }

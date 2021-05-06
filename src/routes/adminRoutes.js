@@ -1,28 +1,27 @@
 const { Router } = require('express')
-const router = Router();
+const router = Router()
 
-const adminValidation = require('../validation/adminValidator.js');
-const AdminController = require('../controllers/adminControllers');
+const adminValidation = require('../validation/adminValidator.js')
+const AdminController = require('../controllers/adminControllers')
 
-
-const authMiddleware = require("../middleware/auth");
+const authMiddleware = require('../middleware/auth')
 
 router.post(
-  "/signup",
+  '/signup',
   adminValidation.singUp,
   AdminController.signup
-);
+)
 
 router.post(
-  "/signin", 
+  '/signin',
   adminValidation.singIn,
   AdminController.signin
-);
+)
 
 router.get(
-  "/getAdminUser",
-  authMiddleware.authenticateToken, 
+  '/getAdminUser',
+  authMiddleware.authenticateToken,
   AdminController.getAdminUser
-);
+)
 
-module.exports = router;
+module.exports = router

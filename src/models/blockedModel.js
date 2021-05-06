@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-  const Blocked = sequelize.define("blocked_users", {
+  const Blocked = sequelize.define('blocked_users', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     user_id: {
       type: Sequelize.INTEGER
@@ -12,12 +12,12 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER
     },
     reason: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING
     },
     unblocked: {
       type: Sequelize.INTEGER
-    },
-  });
+    }
+  })
 
-  return Blocked;
-};
+  return Blocked
+}

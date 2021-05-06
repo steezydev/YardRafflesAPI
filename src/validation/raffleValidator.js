@@ -1,31 +1,28 @@
-const { check, body, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator')
 
 exports.getRaffleList = [
-  check('page').exists().isInt(),
+  check('page').optional().isInt(),
   check('limit').optional().isInt(),
   check('sort').optional().isString().trim().escape(),
   check('sort_dir').optional().isString().trim().escape(),
   check('search').optional().isString().trim().escape(),
-
   (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-    else next();
+      return res.status(422).json({ errors: errors.array() })
+    } else next()
   }
-];
+]
 
 exports.getRaffleData = [
   check('id').exists().isInt(),
   (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-    else next();
+      return res.status(422).json({ errors: errors.array() })
+    } else next()
   }
-];
+]
 
 exports.createRaffle = [
   check('title').exists().notEmpty().isString().trim().escape(),
@@ -40,10 +37,9 @@ exports.createRaffle = [
   check('profit').optional().isString().trim().escape(),
   check('tags').optional().isArray(),
   (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-    else next();
+      return res.status(422).json({ errors: errors.array() })
+    } else next()
   }
-];
+]

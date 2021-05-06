@@ -1,10 +1,10 @@
-const db = require("../models");
-const Announce = db.announce;
-const Tags = db.tags;
+const db = require('../models')
+// const Announce = db.announce;
+const Tags = db.tags
 
 exports.checkTags = async function (tags) {
   try {
-    let ctags = await Tags.findAll({
+    const ctags = await Tags.findAll({
       where: {
         id: tags
       }
@@ -13,9 +13,11 @@ exports.checkTags = async function (tags) {
     if (ctags.length > 0) {
       return true
     } else {
-      throw ({ status: 404, message: 'Not found in the database' });
+      const errorMessage = { status: 404, message: 'Tags not found in the database' }
+      throw errorMessage
     }
   } catch (err) {
-    throw ({ status: err.status, message: err.message || "Some error occurred while getting the Announce." });
+    const errorMessage = { status: err.status, message: err.message || 'Some error occurred while getting the Announce.' }
+    throw errorMessage
   }
 }

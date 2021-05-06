@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-  const Announce = sequelize.define("announcements", {
+  const Announce = sequelize.define('announcements', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     itemTitle: {
       type: Sequelize.STRING
@@ -19,8 +19,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     publication_date: {
       type: Sequelize.DATE
-    },
-  });
+    }
+  })
 
-  return Announce;
-};
+  return Announce
+}
