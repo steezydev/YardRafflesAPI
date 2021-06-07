@@ -1,5 +1,6 @@
 const BotService = require('../services/BotServices')
 const RaffleService = require('../services/raffleServices')
+const ParticipationService = require('../services/participationServices')
 
 exports.getBotUser = async (req, res, next) => {
   const telegramId = req.params.telegramId
@@ -57,7 +58,7 @@ exports.getBotRafflesToPost = async (req, res, next) => {
 
 exports.getBotCurrentRaffles = async (req, res, next) => {
   try {
-    const raffles = await BotService.getCurrentRaffles()
+    const raffles = await RaffleService.getCurrentRaffles()
     res.json({ data: raffles })
   } catch (err) {
     next(err)
@@ -68,7 +69,7 @@ exports.getRaffle = async (req, res, next) => {
   const id = req.params.id
 
   try {
-    const raffle = await BotService.getRaffle(id)
+    const raffle = await RaffleService.getRaffleById(id)
     res.json({ data: raffle })
   } catch (err) {
     next(err)
@@ -80,7 +81,7 @@ exports.addPartRaffle = async (req, res, next) => {
   const telegramId = req.query.telegramId
 
   try {
-    const raffle = await BotService.addPartRaffle(id, telegramId)
+    const raffle = await ParticipationService.addPartRaffle(id, telegramId)
     res.json({ data: raffle })
   } catch (err) {
     next(err)
@@ -104,8 +105,28 @@ exports.confirmSuccess = async (req, res, next) => {
   const telegramId = req.query.telegramId
 
   try {
-    const raffle = await BotService.confirmSuccess(id, telegramId)
+    const raffle = await ParticipationService.confirmSuccess(id, telegramId)
     res.json({ data: raffle })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getRafflesStats = async (req, res, next) => {
+  try {
+    const stats = await RaffleService.getRafflesStats()
+    res.json({ data: stats })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getUserRafflesStats = async (req, res, next) => {
+  const telegramId = req.params.telegramId
+
+  try {
+    const stats = await RaffleService.getUserRafflesStats(telegramId)
+    res.json({ data: stats })
   } catch (err) {
     next(err)
   }

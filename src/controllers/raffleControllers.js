@@ -3,7 +3,6 @@ const TagsService = require('../services/tagServices')
 
 exports.getRaffleList = async function (req, res, next) {
   const page = req.query.page
-  console.log(page)
   const limit = parseInt(req.query.limit) || 10
   const sort = req.query.sort
   const sortDir = req.query.sort_dir

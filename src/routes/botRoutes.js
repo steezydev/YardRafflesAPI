@@ -84,4 +84,30 @@ router.put(
   BotController.confirmSuccess
 )
 
+router.put(
+  '/updateUser/:telegramId',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.updateBotUser
+  ],
+  BotController.updateBotUser
+)
+
+router.get(
+  '/getRafflesStats',
+  [
+    botAuthMiddleware.checkKey
+  ],
+  BotController.getRafflesStats
+)
+
+router.get(
+  '/getUserRafflesStats/:telegramId',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.getUserRafflesStats
+  ],
+  BotController.getUserRafflesStats
+)
+
 module.exports = router

@@ -10,8 +10,6 @@ const _ = require('lodash')
 const UserService = require('./userServices')
 
 exports.getRaffleList = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
-  console.log(sort)
-
   try {
     const checkRaffles = await Raffle.count()
 
@@ -252,6 +250,123 @@ exports.getRafflesToPost = async function () {
     })
 
     return raffles
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+exports.getCurrentRaffles = async function () {
+  try {
+    const checkRaffles = await Raffle.count()
+
+    if (!checkRaffles) {
+      return []
+    }
+
+    const raffles = await Raffle.findAll({
+      where: {
+        status: 1,
+        close_date: {
+          [Op.gt]: new Date(Date.now())
+        }
+      }
+    })
+
+    return raffles
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+exports.getRafflesStats = async function () {
+  try {
+    const active = await Raffle.count({
+      where: {
+        status: 1
+      }
+    })
+
+    const history = await Raffle.count()
+
+    const stats = {
+      active: active,
+      history: history
+    }
+
+    return stats
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+exports.getUserRafflesStats = async function (telegramId) {
+  try {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
+    const current = await Raffle.count({
+      where: {
+        status: 1
+      },
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            [Op.or]: [
+              { status: 0 },
+              { status: 1 }
+            ],
+            user_id: userId
+          },
+          attributes: []
+        }
+      ]
+    })
+
+    const participated = await Raffle.count({
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId,
+            [Op.or]: [
+              { status: 0 },
+              { status: 1 },
+              { status: 2 }
+            ]
+          },
+          attributes: []
+        }
+      ]
+    })
+
+    const won = await Raffle.count({
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId,
+            [Op.or]: [
+              { status: 2 }
+            ]
+          },
+          attributes: []
+        }
+      ]
+    })
+
+    const stats = {
+      current: current,
+      participated: participated,
+      won: won
+    }
+
+    return stats
   } catch (err) {
     const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
     throw errorMessage

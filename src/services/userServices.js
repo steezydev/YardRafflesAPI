@@ -87,6 +87,26 @@ exports.getUsers = async function (page, limit, sort = 'id', sortDir = 'desc', s
   }
 }
 
+exports.getUserByTelegramId = async function (telegramId) {
+  try {
+    const user = await User.findOne({
+      where: {
+        telegramId: telegramId
+      }
+    })
+
+    if (!user) {
+      const errorMessage = { status: 404, message: 'User not found' }
+      throw errorMessage
+    }
+
+    return user
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
+  }
+}
+
 exports.getUserById = async function (id) {
   try {
     const user = await User.findByPk(id, {
