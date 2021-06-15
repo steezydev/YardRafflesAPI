@@ -6,6 +6,10 @@ const BotController = require('../controllers/botControllers')
 
 const botAuthMiddleware = require('../middleware/botAuth')
 
+/**
+ * @name getUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/admin/userAuthorization
+ */
 router.get(
   '/getUser/:telegramId',
   [
@@ -15,6 +19,10 @@ router.get(
   BotController.getBotUser
 )
 
+/**
+ * @name addUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/addBotUser
+ */
 router.post(
   '/addUser',
   [
@@ -24,6 +32,10 @@ router.post(
   BotController.addBotUser
 )
 
+/**
+ * @name updateUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/updateBotUser
+ */
 router.put(
   '/updateUser/:telegramId',
   [
@@ -33,6 +45,10 @@ router.put(
   BotController.updateBotUser
 )
 
+/**
+ * @name getRafflesToPost
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotRafflesToPost
+ */
 router.get(
   '/getRafflesToPost',
   [
@@ -41,6 +57,10 @@ router.get(
   BotController.getBotRafflesToPost
 )
 
+/**
+ * @name getCurrentRaffles
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotCurrentRaffles
+ */
 router.get(
   '/getCurrentRaffles',
   [
@@ -49,6 +69,10 @@ router.get(
   BotController.getBotCurrentRaffles
 )
 
+/**
+ * @name getRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getRaffle
+ */
 router.get(
   '/getRaffle/:id',
   [
@@ -57,6 +81,10 @@ router.get(
   BotController.getRaffle
 )
 
+/**
+ * @name addPartRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/addPartRaffle
+ */
 router.post(
   '/addPartRaffle/:id',
   [
@@ -66,6 +94,10 @@ router.post(
   BotController.addPartRaffle
 )
 
+/**
+ * @name confirmParticipation
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/confirmParticipation
+ */
 router.put(
   '/confirmParticipation/:id',
   [
@@ -75,6 +107,10 @@ router.put(
   BotController.confirmParticipation
 )
 
+/**
+ * @name confirmSuccess
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/confirmSuccess
+ */
 router.put(
   '/confirmSuccess/:id',
   [
@@ -84,15 +120,10 @@ router.put(
   BotController.confirmSuccess
 )
 
-router.put(
-  '/updateUser/:telegramId',
-  [
-    botAuthMiddleware.checkKey,
-    botValidation.updateBotUser
-  ],
-  BotController.updateBotUser
-)
-
+/**
+ * @name getRafflesStats
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getUserRafflesStats
+ */
 router.get(
   '/getRafflesStats',
   [
@@ -101,6 +132,10 @@ router.get(
   BotController.getRafflesStats
 )
 
+/**
+ * @name getUserRafflesStats
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getRafflesStats
+ */
 router.get(
   '/getUserRafflesStats/:telegramId',
   [

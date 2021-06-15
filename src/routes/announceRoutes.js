@@ -5,6 +5,10 @@ const announceValidation = require('../validation/announceValidator.js')
 
 const authMiddleware = require('../middleware/auth')
 
+/**
+ * @name getAnnounces
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/announcements/getAnnounceList
+ */
 router.get(
   '/getAnnounces',
   [
@@ -14,6 +18,10 @@ router.get(
   AnnounceController.getAllAnnounces
 )
 
+/**
+ * @name getAnnounceData
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/announcements/getAnnounceData
+ */
 router.get(
   '/get/:id',
   [
@@ -23,6 +31,10 @@ router.get(
   AnnounceController.getAnnounceById
 )
 
+/**
+ * @name createAnnounce
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/announcements/createAnnounce
+ */
 router.post(
   '/create',
   [
@@ -32,6 +44,10 @@ router.post(
   AnnounceController.createAnnounce
 )
 
+/**
+ * @name updateAnnounce
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/announcements/updateAnnounce
+ */
 router.put(
   '/update/:id',
   [
@@ -41,6 +57,10 @@ router.put(
   AnnounceController.updateAnnounce
 )
 
+/**
+ * @name deleteAnnounce
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/announcements/deleteAnnounce
+ */
 router.delete(
   '/delete/:id',
   [

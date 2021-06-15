@@ -4,6 +4,17 @@ const Announce = db.announce
 const Tags = db.tags
 const _ = require('lodash')
 
+/** 
+   * Get all announcements with filtering
+   * 
+   * @param page {number} - Page
+   * @param limit {number} - Limit per page
+   * @param sort {string} - Sort by column
+   * @param sortDir {string} - Sorting direction (asc, desc)
+   * @param search {string} - Search string
+   * @returns Array of Announce objects
+   * 
+*/
 exports.getAllAnnounces = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
   try {
     const options = {
@@ -48,6 +59,13 @@ exports.getAllAnnounces = async function (page, limit, sort = 'id', sortDir = 'd
   }
 }
 
+/** 
+   * Get announce user by id
+   * 
+   * @param id {number} - Announce id in database
+   * @returns Announce object
+   * 
+*/
 exports.getAnnounceById = async function (id) {
   try {
     const annouces = await Announce.findByPk(id, {
@@ -72,6 +90,13 @@ exports.getAnnounceById = async function (id) {
   }
 }
 
+/** 
+   * Delete Announce
+   * 
+   * @param id {number} - Announce id in database
+   * @returns Status
+   * 
+*/
 exports.deleteAnnounce = async function (id) {
   try {
     const announce = await Announce.destroy({
@@ -92,6 +117,14 @@ exports.deleteAnnounce = async function (id) {
   }
 }
 
+/** 
+   * Create Announce
+   * 
+   * @param newAnnounce {object} - Announce data
+   * @param tags {object} - tags
+   * @returns Announce object
+   * 
+*/
 exports.createAnnounce = async function (newAnnounce, tags) {
   try {
     const result = await db.sequelize.transaction(async (t) => {
@@ -112,6 +145,15 @@ exports.createAnnounce = async function (newAnnounce, tags) {
   }
 }
 
+/** 
+   * Update Announce
+   * 
+   * @param id {number} - Announce id
+   * @param newAnnounce {object} - Announce data
+   * @param tags {object} - tags
+   * @returns Announce object
+   * 
+*/
 exports.updateAnnounce = async function (id, updateAnnounce, tags) {
   try {
     const result = await db.sequelize.transaction(async (t) => {

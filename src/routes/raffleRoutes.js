@@ -5,6 +5,10 @@ const raffleValidation = require('../validation/raffleValidator.js')
 
 const authMiddleware = require('../middleware/auth')
 
+/**
+ * @name getRaffles
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/raffles/getRaffleList
+ */
 router.get(
   '/getRaffles',
   [
@@ -14,6 +18,10 @@ router.get(
   RaffleController.getRaffleList
 )
 
+/**
+ * @name getRaffleData
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/raffles/getRaffleData
+ */
 router.get(
   '/get/:id',
   [
@@ -23,6 +31,10 @@ router.get(
   RaffleController.getRaffleData
 )
 
+/**
+ * @name createRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/raffles/createRaffle
+ */
 router.post(
   '/create',
   [
@@ -32,6 +44,10 @@ router.post(
   RaffleController.createRaffle
 )
 
+/**
+ * @name updateRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/raffles/updateRaffle
+ */
 router.put(
   '/update/:id',
   [
@@ -41,6 +57,10 @@ router.put(
   RaffleController.updateRaffle
 )
 
+/**
+ * @name deleteRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/raffles/deleteRaffle
+ */
 router.delete(
   '/delete/:id',
   [

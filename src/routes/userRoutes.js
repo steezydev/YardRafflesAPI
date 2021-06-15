@@ -5,6 +5,10 @@ const UserController = require('../controllers/userControllers')
 const userValidation = require('../validation/userValidator.js')
 const authMiddleware = require('../middleware/auth')
 
+/**
+ * @name getUsers
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/users/getAllUser
+ */
 router.get(
   '/getUsers',
   [
@@ -14,6 +18,10 @@ router.get(
   UserController.getUsers
 )
 
+/**
+ * @name getUserById
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/users/getUserById
+ */
 router.get(
   '/get/:id',
   [
@@ -23,6 +31,10 @@ router.get(
   UserController.getUserById
 )
 
+/**
+ * @name blockUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/users/blockUser
+ */
 router.put(
   '/block/:id',
   [
@@ -32,6 +44,10 @@ router.put(
   UserController.blockUser
 )
 
+/**
+ * @name unblockUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/users/unblockUser
+ */
 router.put(
   '/unblock/:id',
   [
@@ -41,6 +57,10 @@ router.put(
   UserController.unblockUser
 )
 
+/**
+ * @name acceptUser
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/users/acceptUser
+ */
 router.put(
   '/accept/:id',
   [

@@ -5,6 +5,17 @@ const Blocked = db.blocked
 const User = db.user
 const _ = require('lodash')
 
+/** 
+   * Get all users with filtering
+   * 
+   * @param page {number} - Page
+   * @param limit {number} - Limit per page
+   * @param sort {string} - Sort by column
+   * @param sortDir {string} - Sorting direction (asc, desc)
+   * @param search {string} - Search string
+   * @returns Array of User objects
+   * 
+*/
 exports.getUsers = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
   try {
     const checkUsers = await User.count()
@@ -87,6 +98,13 @@ exports.getUsers = async function (page, limit, sort = 'id', sortDir = 'desc', s
   }
 }
 
+/** 
+   * Get User by telegram id
+   * 
+   * @param telegramId {number} - Telegram id
+   * @returns User object
+   * 
+*/
 exports.getUserByTelegramId = async function (telegramId) {
   try {
     const user = await User.findOne({
@@ -107,6 +125,14 @@ exports.getUserByTelegramId = async function (telegramId) {
   }
 }
 
+
+/** 
+   * Get User by id
+   * 
+   * @param id {number} - User id
+   * @returns User object
+   * 
+*/
 exports.getUserById = async function (id) {
   try {
     const user = await User.findByPk(id, {
@@ -131,6 +157,14 @@ exports.getUserById = async function (id) {
   }
 }
 
+/** 
+   * Block User
+   * 
+   * @param id {number} - User id
+   * @param block {string} - Reason
+   * @returns status
+   * 
+*/
 exports.blockUser = async function (id, block) {
   try {
     const user = await exports.getUserById(id)
@@ -176,6 +210,13 @@ exports.blockUser = async function (id, block) {
   }
 }
 
+/** 
+   * Unblock User
+   * 
+   * @param id {number} - User id
+   * @returns status
+   * 
+*/
 exports.unblockUser = async function (id) {
   try {
     const isBlocked = await Blocked.count({
@@ -184,8 +225,6 @@ exports.unblockUser = async function (id) {
         unblocked: 0
       }
     })
-
-    console.log(isBlocked)
 
     if (!isBlocked) {
       const errorMessage = { status: 400, message: 'User is not blocked' }
@@ -224,6 +263,13 @@ exports.unblockUser = async function (id) {
   }
 }
 
+/** 
+   * Accept User
+   * 
+   * @param id {number} - User id
+   * @returns status
+   * 
+*/
 exports.acceptUser = async function (id) {
   try {
     const isAccepted = await User.count({
@@ -260,6 +306,13 @@ exports.acceptUser = async function (id) {
   }
 }
 
+/** 
+   * Get user participating in Raffle
+   * 
+   * @param raffleId {number} - Raffle id
+   * @returns Array of users objects
+   * 
+*/
 exports.getRegedUsers = async function (raffleId) {
   try {
     const users = await User.findAll({
@@ -293,6 +346,13 @@ exports.getRegedUsers = async function (raffleId) {
   }
 }
 
+/** 
+   * Get user won in Raffle
+   * 
+   * @param raffleId {number} - Raffle id
+   * @returns Array of users objects
+   * 
+*/
 exports.getWinUsers = async function (raffleId) {
   try {
     const users = await User.findAll({

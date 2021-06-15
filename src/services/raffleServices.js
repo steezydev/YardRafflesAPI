@@ -9,6 +9,17 @@ const _ = require('lodash')
 // const ParticipationService = require('./participationServices')
 const UserService = require('./userServices')
 
+/** 
+   * Get all raffles with filtering
+   * 
+   * @param page {number} - Page
+   * @param limit {number} - Limit per page
+   * @param sort {string} - Sort by column
+   * @param sortDir {string} - Sorting direction (asc, desc)
+   * @param search {string} - Search string
+   * @returns Array of Raffle objects
+   * 
+*/
 exports.getRaffleList = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
   try {
     const checkRaffles = await Raffle.count()
@@ -102,6 +113,13 @@ exports.getRaffleList = async function (page, limit, sort = 'id', sortDir = 'des
   }
 }
 
+/** 
+   * Get raffle data
+   * 
+   * @param id {number} - Announce id in database
+   * @returns Raffle object
+   * 
+*/
 exports.getRaffleData = async function (id) {
   try {
     let raffle = await exports.getRaffleById(id)
@@ -118,6 +136,13 @@ exports.getRaffleData = async function (id) {
   }
 }
 
+/** 
+   * Get raffle by id
+   * 
+   * @param id {number} - Announce id in database
+   * @returns Raffle object
+   * 
+*/
 exports.getRaffleById = async function (id) {
   try {
     const raffle = await Raffle.findByPk(id, {
@@ -142,6 +167,13 @@ exports.getRaffleById = async function (id) {
   }
 }
 
+/** 
+   * Delete raffle
+   * 
+   * @param id {number} - Announce id in database
+   * @returns status
+   * 
+*/
 exports.deleteRaffle = async function (id) {
   try {
     const raffle = await Raffle.destroy({
@@ -162,6 +194,15 @@ exports.deleteRaffle = async function (id) {
   }
 }
 
+
+/** 
+   * Create Raffle
+   * 
+   * @param newRaffle {object} - Raffle data
+   * @param tags {object} - tags
+   * @returns Raffle object
+   * 
+*/
 exports.createRaffle = async function (newRaffle, tags) {
   try {
     const result = await db.sequelize.transaction(async (t) => {
@@ -182,6 +223,15 @@ exports.createRaffle = async function (newRaffle, tags) {
   }
 }
 
+/** 
+   * Update Raffle
+   * 
+   * @param id {number} - Raffle id
+   * @param updateRaffle {object} - Raffle data
+   * @param tags {object} - tags
+   * @returns Raffle object
+   * 
+*/
 exports.updateRaffle = async function (id, updateRaffle, tags) {
   try {
     const result = await db.sequelize.transaction(async (t) => {
@@ -215,6 +265,12 @@ exports.updateRaffle = async function (id, updateRaffle, tags) {
   }
 }
 
+/** 
+   * Get Raffle to post in bot
+   * 
+   * @returns Array of raffle objects
+   * 
+*/
 exports.getRafflesToPost = async function () {
   try {
     const checkRaffles = await Raffle.count()
@@ -256,6 +312,12 @@ exports.getRafflesToPost = async function () {
   }
 }
 
+/** 
+   * Get current Raffles
+   * 
+   * @returns Array of raffle objects
+   * 
+*/
 exports.getCurrentRaffles = async function () {
   try {
     const checkRaffles = await Raffle.count()
@@ -280,6 +342,12 @@ exports.getCurrentRaffles = async function () {
   }
 }
 
+/** 
+   * Get Raffles stats
+   * 
+   * @returns Object of stats
+   * 
+*/
 exports.getRafflesStats = async function () {
   try {
     const active = await Raffle.count({
@@ -302,6 +370,13 @@ exports.getRafflesStats = async function () {
   }
 }
 
+/** 
+   * Get Raffles stats for user
+   * 
+   * @param telegramId - User's telegram id
+   * @returns Object of stats
+   * 
+*/
 exports.getUserRafflesStats = async function (telegramId) {
   try {
     const { id: userId } = await UserService.getUserByTelegramId(telegramId)
