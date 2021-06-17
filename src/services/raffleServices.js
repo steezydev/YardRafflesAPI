@@ -143,14 +143,41 @@ exports.getRaffleData = async function (id) {
    * @returns Raffle object
    * 
 */
-exports.getRaffleById = async function (id) {
+exports.getRaffleById = async function (raffleId, telegramId) {
   try {
-    const raffle = await Raffle.findByPk(id, {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
+    const raffle = await Raffle.findByPk(raffleId, {
+      attributes: [
+        'id',
+        'itemTitle',
+        'work_name',
+        'images',
+        'message',
+        'link',
+        'sizes',
+        'publication_date',
+        'publish',
+        'close_date',
+        'results_date',
+        'status',
+        'profit',
+        [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
+      ],
       include: [
         {
           model: Tags,
           as: 'tags',
           through: { attributes: [] }
+        },
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId
+          },
+          attributes: [],
+          required: false
         }
       ]
     })
@@ -318,8 +345,10 @@ exports.getRafflesToPost = async function () {
    * @returns Array of raffle objects
    * 
 */
-exports.getCurrentRaffles = async function () {
+exports.getCurrentRaffles = async function (telegramId) {
   try {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
     const checkRaffles = await Raffle.count()
 
     if (!checkRaffles) {
@@ -327,12 +356,39 @@ exports.getCurrentRaffles = async function () {
     }
 
     const raffles = await Raffle.findAll({
+      attributes: [
+        'id',
+        'itemTitle',
+        'work_name',
+        'images',
+        'message',
+        'link',
+        'sizes',
+        'publication_date',
+        'publish',
+        'close_date',
+        'results_date',
+        'status',
+        'profit',
+        [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
+      ],
       where: {
         status: 1,
         close_date: {
           [Op.gt]: new Date(Date.now())
         }
-      }
+      },
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId
+          },
+          attributes: [],
+          required: false
+        },
+      ]
     })
 
     return raffles

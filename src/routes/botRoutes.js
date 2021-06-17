@@ -64,7 +64,8 @@ router.get(
 router.get(
   '/getCurrentRaffles',
   [
-    botAuthMiddleware.checkKey
+    botAuthMiddleware.checkKey,
+    botValidation.getUserRafflesStats
   ],
   BotController.getBotCurrentRaffles
 )
@@ -76,7 +77,8 @@ router.get(
 router.get(
   '/getRaffle/:id',
   [
-    botAuthMiddleware.checkKey
+    botAuthMiddleware.checkKey,
+    botValidation.addPartRaffle
   ],
   BotController.getRaffle
 )
@@ -92,6 +94,19 @@ router.post(
     botValidation.addPartRaffle
   ],
   BotController.addPartRaffle
+)
+
+/**
+ * @name removePartRaffle
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/removePartRaffle
+ */
+ router.post(
+  '/removePartRaffle/:id',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.addPartRaffle
+  ],
+  BotController.removePartRaffle
 )
 
 /**

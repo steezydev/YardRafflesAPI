@@ -57,8 +57,10 @@ exports.getBotRafflesToPost = async (req, res, next) => {
 }
 
 exports.getBotCurrentRaffles = async (req, res, next) => {
+  const telegramId = req.query.telegramId
+
   try {
-    const raffles = await RaffleService.getCurrentRaffles()
+    const raffles = await RaffleService.getCurrentRaffles(telegramId)
     res.json({ data: raffles })
   } catch (err) {
     next(err)
@@ -67,9 +69,10 @@ exports.getBotCurrentRaffles = async (req, res, next) => {
 
 exports.getRaffle = async (req, res, next) => {
   const id = req.params.id
+  const telegramId = req.query.telegramId
 
   try {
-    const raffle = await RaffleService.getRaffleById(id)
+    const raffle = await RaffleService.getRaffleById(id, telegramId)
     res.json({ data: raffle })
   } catch (err) {
     next(err)
@@ -82,6 +85,18 @@ exports.addPartRaffle = async (req, res, next) => {
 
   try {
     const raffle = await ParticipationService.addPartRaffle(id, telegramId)
+    res.json({ data: raffle })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.removePartRaffle = async (req, res, next) => {
+  const id = req.params.id
+  const telegramId = req.query.telegramId
+
+  try {
+    const raffle = await ParticipationService.removePartRaffle(id, telegramId)
     res.json({ data: raffle })
   } catch (err) {
     next(err)

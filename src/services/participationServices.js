@@ -70,7 +70,31 @@ exports.addPartRaffle = async function (raffleId, telegramId) {
     await Participation.create({
       raffle_id: raffleId,
       user_id: user.id,
-      status: 0
+      status: 1
+    })
+
+    return 1
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+exports.removePartRaffle = async function (raffleId, telegramId) {
+  try {
+    if (await exports.getBotParticipation(raffleId, telegramId) === null) {
+      const errorMessage = { status: 400, message: 'Participation doesn\'t exists' }
+      throw errorMessage
+    }
+
+    const user = await UserService.getUserByTelegramId(telegramId)
+
+    await Participation.destroy({
+      where: {
+        raffle_id: raffleId,
+        user_id: user.id,
+        status: 1
+      }
     })
 
     return 1
