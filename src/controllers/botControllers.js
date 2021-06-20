@@ -67,6 +67,39 @@ exports.getBotCurrentRaffles = async (req, res, next) => {
   }
 }
 
+exports.getBotCurrPartRaffles = async (req, res, next) => {
+  const telegramId = req.query.telegramId
+
+  try {
+    const raffles = await RaffleService.getCurrPartRaffles(telegramId)
+    res.json({ data: raffles })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getBotParticipatedRaffles = async (req, res, next) => {
+  const telegramId = req.query.telegramId
+
+  try {
+    const raffles = await RaffleService.getParticipatedRaffles(telegramId)
+    res.json({ data: raffles })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getBotWonRaffles = async (req, res, next) => {
+  const telegramId = req.query.telegramId
+
+  try {
+    const raffles = await RaffleService.getWonRaffles(telegramId)
+    res.json({ data: raffles })
+  } catch (err) {
+    next(err)
+  }
+}
+
 exports.getRaffle = async (req, res, next) => {
   const id = req.params.id
   const telegramId = req.query.telegramId
@@ -100,7 +133,7 @@ exports.removePartRaffle = async (req, res, next) => {
     res.json({ data: raffle })
   } catch (err) {
     next(err)
-  }
+  } 
 }
 
 exports.confirmParticipation = async (req, res, next) => {

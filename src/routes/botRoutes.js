@@ -71,6 +71,45 @@ router.get(
 )
 
 /**
+ * @name getParticipatedRaffles
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotCurrPartRaffles
+ */
+ router.get(
+  '/getCurrPartRaffles',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.getUserRafflesStats
+  ],
+  BotController.getBotCurrPartRaffles
+)
+
+/**
+ * @name getParticipatedRaffles
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotParticipatedRaffles
+ */
+ router.get(
+  '/getParticipatedRaffles',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.getUserRafflesStats
+  ],
+  BotController.getBotParticipatedRaffles
+)
+
+/**
+ * @name getWonRaffles
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotWonRaffles
+ */
+ router.get(
+  '/getWonRaffles',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.getUserRafflesStats
+  ],
+  BotController.getBotWonRaffles
+)
+
+/**
  * @name getRaffle
  * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getRaffle
  */

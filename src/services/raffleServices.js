@@ -162,6 +162,7 @@ exports.getRaffleById = async function (raffleId, telegramId) {
         'results_date',
         'status',
         'profit',
+        [db.sequelize.col('participation.successHash'), 'successHash'],
         [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
       ],
       include: [
@@ -340,6 +341,173 @@ exports.getRafflesToPost = async function () {
 }
 
 /** 
+   * Get current Raffles user participated
+   * 
+   * @returns Array of raffle objects
+   * 
+*/
+exports.getCurrPartRaffles = async function (telegramId) {
+  try {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
+    const checkRaffles = await Raffle.count()
+
+    if (!checkRaffles) {
+      return []
+    }
+
+    const raffles = await Raffle.findAll({
+      attributes: [
+        'id',
+        'itemTitle',
+        'work_name',
+        'images',
+        'message',
+        'link',
+        'sizes',
+        'publication_date',
+        'publish',
+        'close_date',
+        'results_date',
+        'status',
+        'profit',
+        [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
+      ],
+      where: {
+        status: 1,
+        close_date: {
+          [Op.gt]: new Date(Date.now())
+        }
+      },
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId
+          },
+          attributes: []
+        },
+      ]
+    })
+
+    return raffles
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+/** 
+   * Get Raffles user participated
+   * 
+   * @returns Array of raffle objects
+   * 
+*/
+exports.getParticipatedRaffles = async function (telegramId) {
+  try {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
+    const checkRaffles = await Raffle.count()
+
+    if (!checkRaffles) {
+      return []
+    }
+
+    const raffles = await Raffle.findAll({
+      attributes: [
+        'id',
+        'itemTitle',
+        'work_name',
+        'images',
+        'message',
+        'link',
+        'sizes',
+        'publication_date',
+        'publish',
+        'close_date',
+        'results_date',
+        'status',
+        'profit',
+        [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
+      ],
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId
+          },
+          attributes: []
+        },
+      ]
+    })
+
+    return raffles
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+/** 
+   * Get Raffles user won
+   * 
+   * @returns Array of raffle objects
+   * 
+*/
+exports.getWonRaffles = async function (telegramId) {
+  try {
+    const { id: userId } = await UserService.getUserByTelegramId(telegramId)
+
+    const checkRaffles = await Raffle.count()
+
+    if (!checkRaffles) {
+      return []
+    }
+
+    const raffles = await Raffle.findAll({
+      attributes: [
+        'id',
+        'itemTitle',
+        'work_name',
+        'images',
+        'message',
+        'link',
+        'sizes',
+        'publication_date',
+        'publish',
+        'close_date',
+        'results_date',
+        'status',
+        'profit',
+        [db.sequelize.col('participation.closed'), 'closed'],
+        [db.sequelize.literal('CASE WHEN participation.status IS NULL THEN 0 ELSE participation.status END'), 'userStatus'],
+      ],
+      order: [
+        [db.sequelize.col('participation.closed'), 'ASC'],
+      ],
+      include: [
+        {
+          model: Participation,
+          as: 'participation',
+          where: {
+            user_id: userId,
+            status: 2
+          },
+          attributes: []
+        },
+      ]
+    })
+
+    return raffles
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred while getting Raffles.' }
+    throw errorMessage
+  }
+}
+
+/** 
    * Get current Raffles
    * 
    * @returns Array of raffle objects
@@ -408,7 +576,10 @@ exports.getRafflesStats = async function () {
   try {
     const active = await Raffle.count({
       where: {
-        status: 1
+        status: 1,
+        close_date: {
+          [Op.gt]: new Date(Date.now())
+        }
       }
     })
 
@@ -439,7 +610,10 @@ exports.getUserRafflesStats = async function (telegramId) {
 
     const current = await Raffle.count({
       where: {
-        status: 1
+        status: 1,
+        close_date: {
+          [Op.gt]: new Date(Date.now())
+        }
       },
       include: [
         {
@@ -448,7 +622,8 @@ exports.getUserRafflesStats = async function (telegramId) {
           where: {
             [Op.or]: [
               { status: 0 },
-              { status: 1 }
+              { status: 1 },
+              { status: 2 }
             ],
             user_id: userId
           },

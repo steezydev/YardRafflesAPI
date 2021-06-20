@@ -32,7 +32,7 @@ exports.createRaffle = [
   check('link').optional().isString().trim().escape(),
   check('sizes').optional().isString().trim().escape(),
   check('publication_date').optional().isString().trim().escape(),
-  check('close_date').optional().isString().trim().escape(),
+  check('close_date').exists().notEmpty().isString().trim().escape(),
   check('results_date').optional().isString().trim().escape(),
   check('profit').optional().isString().trim().escape(),
   check('tags').optional().isArray(),
