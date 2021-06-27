@@ -382,3 +382,27 @@ exports.getWinUsers = async function (raffleId) {
     throw errorMessage
   }
 }
+
+/** 
+   * Get user won in Raffle
+   * 
+   * @param phone {string} - User phone number
+   * @returns status
+   * 
+*/
+exports.checkPhone = async function (phone) {
+  try {
+    const users = await User.count({
+      where: {
+        phone: phone,
+      },
+    })
+
+    console.log(phone)
+
+    return {status: users != 0}
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
+  }
+}

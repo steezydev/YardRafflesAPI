@@ -199,4 +199,17 @@ router.get(
   BotController.getUserRafflesStats
 )
 
+/**
+ * @name checkPhone
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/checkPhone
+ */
+ router.get(
+  '/checkPhone',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.checkPhone
+  ],
+  BotController.checkPhone
+)
+
 module.exports = router

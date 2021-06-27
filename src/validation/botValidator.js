@@ -15,7 +15,7 @@ exports.addBotUser = [
   check('telegramLink').exists().isString().trim().escape(),
   check('phone').optional().isString().trim().escape(),
   check('email').optional().isString().trim().escape(),
-  check('telegramId').exists().isString().trim().escape(),
+  check('telegramId').exists().isNumeric().trim().escape(),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -40,6 +40,16 @@ exports.updateBotUser = [
 
 exports.getUserRafflesStats = [
   check('telegramId').exists().isString().trim().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() })
+    } else next()
+  }
+]
+
+exports.checkPhone = [
+  check('phone').exists().isString().trim().escape(),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

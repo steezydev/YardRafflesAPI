@@ -1,4 +1,5 @@
 const BotService = require('../services/BotServices')
+const UserService = require('../services/UserServices')
 const RaffleService = require('../services/raffleServices')
 const ParticipationService = require('../services/participationServices')
 
@@ -21,6 +22,7 @@ exports.addBotUser = async (req, res, next) => {
     email: req.body.email,
     telegramId: req.body.telegramId
   }
+
 
   try {
     const user = await BotService.addUser(newUser)
@@ -175,6 +177,17 @@ exports.getUserRafflesStats = async (req, res, next) => {
   try {
     const stats = await RaffleService.getUserRafflesStats(telegramId)
     res.json({ data: stats })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.checkPhone = async (req, res, next) => {
+  const phone = req.query.phone
+
+  try {
+    const ckeck = await UserService.checkPhone(phone)
+    res.json({ data: ckeck })
   } catch (err) {
     next(err)
   }
