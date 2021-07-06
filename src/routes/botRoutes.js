@@ -71,7 +71,7 @@ router.get(
 )
 
 /**
- * @name getParticipatedRaffles
+ * @name getCurrentParticipatedRaffles
  * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getBotCurrPartRaffles
  */
  router.get(
@@ -172,6 +172,19 @@ router.put(
     botValidation.confirmSuccess
   ],
   BotController.confirmSuccess
+)
+
+/**
+ * @name confirmLoss
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/confirmLoss
+ */
+ router.put(
+  '/confirmLoss/:id',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.confirmSuccess
+  ],
+  BotController.confirmLoss
 )
 
 /**

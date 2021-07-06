@@ -162,6 +162,18 @@ exports.confirmSuccess = async (req, res, next) => {
   }
 }
 
+exports.confirmLoss = async (req, res, next) => {
+  const id = req.params.id
+  const telegramId = req.query.telegramId
+
+  try {
+    const raffle = await ParticipationService.confirmLoss(id, telegramId)
+    res.json({ data: raffle })
+  } catch (err) {
+    next(err)
+  }
+}
+
 exports.getRafflesStats = async (req, res, next) => {
   try {
     const stats = await RaffleService.getRafflesStats()

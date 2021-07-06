@@ -440,6 +440,10 @@ exports.getParticipatedRaffles = async function (telegramId) {
           },
           attributes: []
         },
+      ],
+      order: [
+        db.sequelize.literal('FIELD(participation.status, 1, 2)'),
+        db.sequelize.literal('CASE WHEN close_date < curdate() THEN 0 ELSE 1 END'),
       ]
     })
 
@@ -642,7 +646,8 @@ exports.getUserRafflesStats = async function (telegramId) {
             [Op.or]: [
               { status: 0 },
               { status: 1 },
-              { status: 2 }
+              { status: 2 },
+              { status: 3 },
             ]
           },
           attributes: []
