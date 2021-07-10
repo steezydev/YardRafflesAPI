@@ -1,5 +1,5 @@
-const BotService = require('../services/BotServices')
-const UserService = require('../services/UserServices')
+const BotService = require('../services/botServices')
+const UserService = require('../services/userServices')
 const RaffleService = require('../services/raffleServices')
 const ParticipationService = require('../services/participationServices')
 
