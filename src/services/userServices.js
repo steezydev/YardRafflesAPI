@@ -125,6 +125,31 @@ exports.getUserByTelegramId = async function (telegramId) {
   }
 }
 
+/** 
+   * Get User their referral hash
+   * 
+   * @param hash {string} - Referral hash
+   * @returns User object
+   * 
+*/
+exports.getUserByRefHash = async function (hash) {
+  try {
+    const user = await User.findOne({
+      where: {
+        refHash: hash
+      }
+    })
+
+    if (!user) {
+      return undefined
+    }
+
+    return user
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
+  }
+}
 
 /** 
    * Get User by id

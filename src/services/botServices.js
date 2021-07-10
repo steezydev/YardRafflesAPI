@@ -1,4 +1,6 @@
 const db = require('../models')
+const UserService = require('./userServices')
+const md5 = require('md5');
 const User = db.user
 
 /** 
@@ -54,8 +56,16 @@ exports.getBotUser = async function (telegramId) {
    * @returns User object
    * 
 */
-exports.addUser = async function (newUser) {
+exports.addUser = async function (newUser, refHash) {
   try {
+    const refUser = UserService.getUserByRefHash(refHash)
+    
+    if (refUser !== undefined) {
+      newUser.invitedId = refUser.id
+    }
+
+    newUser.refHash = exports.generateRefHash()
+
     const createUser = await User.create(newUser)
 
     return await exports.getBotUser(createUser.telegramId)
@@ -84,4 +94,8 @@ exports.updateUser = async function (telegramId, updateUser) {
   } catch (err) {
     throw { status: err.status || 500, message: err.message || 'Some error occurred while getting Announces.' }
   }
+}
+
+exports.generateRefHash = async function () {
+
 }

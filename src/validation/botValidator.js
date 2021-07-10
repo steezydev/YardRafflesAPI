@@ -16,6 +16,7 @@ exports.addBotUser = [
   check('phone').optional().isString().trim().escape(),
   check('email').optional().isString().trim().escape(),
   check('telegramId').exists().isNumeric().trim().escape(),
+  check('refHash').optional().isString().trim().escape(),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

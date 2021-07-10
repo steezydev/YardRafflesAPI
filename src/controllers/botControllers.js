@@ -23,9 +23,11 @@ exports.addBotUser = async (req, res, next) => {
     telegramId: req.body.telegramId
   }
 
+  const refHash = req.query.refHash
+
 
   try {
-    const user = await BotService.addUser(newUser)
+    const user = await BotService.addUser(newUser, refHash)
     res.json({ data: user })
   } catch (err) {
     next(err)
