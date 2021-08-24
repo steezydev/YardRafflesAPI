@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
     invitedId: {
       type: Sequelize.INTEGER
     },
+    refHash: {
+      type: Sequelize.STRING
+    },
     phone: {
       type: Sequelize.STRING
     },
