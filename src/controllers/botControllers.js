@@ -24,6 +24,8 @@ exports.addBotUser = async (req, res, next) => {
   }
 
   const refHash = req.query.refHash
+  console.log(123)
+  console.log(refHash)
 
 
   try {

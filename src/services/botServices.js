@@ -2,6 +2,7 @@ const db = require('../models')
 const UserService = require('./userServices')
 const md5 = require('md5');
 const User = db.user
+const Referral = db.referral
 
 /** 
    * Get bot user by id
@@ -58,17 +59,21 @@ exports.getBotUser = async function (telegramId) {
 */
 exports.addUser = async function (newUser, refHash) {
   try {
-    const refUser = UserService.getUserByRefHash(refHash)
-    
-    if (refUser !== undefined) {
-      newUser.invitedId = refUser.id
-    }
-
-    newUser.refHash = exports.generateRefHash()
+    newUser.refHash = md5(newUser.phone + newUser.telegramId + new Date().getTime() + Math.random().toString(36).substring(10))
 
     const createUser = await User.create(newUser)
 
-    return await exports.getBotUser(createUser.telegramId)
+    const createdUser = await exports.getBotUser(createUser.telegramId)
+
+    const refUser = await UserService.getUserByRefHash(refHash)
+    if (refUser !== undefined) {
+      Referral.create({
+        parentId: refUser.id,
+        childId: createdUser.id
+      })
+    }
+
+    return createdUser
   } catch (err) {
     throw { status: err.status || 500, message: err.message || 'Some error occurred while getting Announces.' }
   }

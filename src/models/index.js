@@ -30,6 +30,7 @@ db.raffle = require('./raffleModel.js')(sequelize, Sequelize)
 db.user = require('./userModel.js')(sequelize, Sequelize)
 db.participation = require('./participationModel.js')(sequelize, Sequelize)
 db.blocked = require('./blockedModel.js')(sequelize, Sequelize)
+db.referral = require('./referralModel.js')(sequelize, Sequelize)
 
 db.announce.belongsToMany(db.tags, {
   through: 'rel_announcements_to_tag',
