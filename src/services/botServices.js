@@ -65,8 +65,8 @@ exports.addUser = async function (newUser, refHash) {
 
     const createdUser = await exports.getBotUser(createUser.telegramId)
 
-    const refUser = await UserService.getUserByRefHash(refHash)
-    if (refUser !== undefined) {
+    if (refHash !== undefined) {
+      const refUser = await UserService.getUserByRefHash(refHash)
       Referral.create({
         parentId: refUser.id,
         childId: createdUser.id
