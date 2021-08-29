@@ -67,10 +67,7 @@ exports.addUser = async function (newUser, refHash) {
 
     if (refHash !== undefined) {
       const refUser = await UserService.getUserByRefHash(refHash)
-      Referral.create({
-        parentId: refUser.id,
-        childId: createdUser.id
-      })
+      refUser.addChild(createdUser)
     }
 
     return createdUser

@@ -225,4 +225,17 @@ router.get(
   BotController.checkPhone
 )
 
+/**
+ * @name getRefCount
+ * @link 
+ */
+ router.get(
+  '/getRefCount/:id',
+  [
+    botAuthMiddleware.checkKey,
+    botValidation.getRaffle
+  ],
+  BotController.getRefCount
+)
+
 module.exports = router

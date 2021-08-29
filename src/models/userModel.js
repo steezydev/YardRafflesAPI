@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
     telegramId: {
       type: Sequelize.INTEGER
     },
-    invitedId: {
+    parentId: {
       type: Sequelize.INTEGER
     },
     refHash: {
@@ -42,6 +42,8 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER
     }
   })
+
+  User.isHierarchy();
 
   return User
 }

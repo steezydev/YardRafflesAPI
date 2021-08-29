@@ -3,6 +3,7 @@ const db = require('../models')
 const Participation = db.participation
 const Blocked = db.blocked
 const User = db.user
+const Referral = db.referral
 const _ = require('lodash')
 
 /** 
@@ -16,6 +17,36 @@ const _ = require('lodash')
    * @returns Array of User objects
    * 
 */
+
+exports.getRefCount = async function (userId) {
+  try {
+    const options = {
+      model: Referral,
+      as: 'c',
+      attributes: ['id'],
+      where: { id: 26 },
+      include: {
+        model: Referral,
+        as: 'c1',
+        attributes: ['id'],
+        where: { id: 26 },
+        include: [{
+          model: Referral,
+          as: 'c2',
+          attributes: ['id'],
+          where: { id: 26 }
+        }]
+      }
+    }
+
+    const referrals = await Referral.findAndCountAll(options)
+
+    return referrals
+  } catch (err) {
+    const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
+    throw errorMessage
+  }
+}
 exports.getUsers = async function (page, limit, sort = 'id', sortDir = 'desc', search = '') {
   try {
     const checkUsers = await User.count()
@@ -425,7 +456,7 @@ exports.checkPhone = async function (phone) {
 
     console.log(phone)
 
-    return {status: users != 0}
+    return { status: users != 0 }
   } catch (err) {
     const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
     throw errorMessage

@@ -22,7 +22,8 @@
     "md5": "^2.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.5.0"
+    "sequelize": "^5.22.3",
+    "sequelize-hierarchy": "^2.0.4"
   },
   "devDependencies": {
     "eslint-plugin-import": "^2.22.1",

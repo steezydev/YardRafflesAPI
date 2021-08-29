@@ -139,7 +139,7 @@ exports.removePartRaffle = async (req, res, next) => {
     res.json({ data: raffle })
   } catch (err) {
     next(err)
-  } 
+  }
 }
 
 exports.confirmParticipation = async (req, res, next) => {
@@ -204,6 +204,17 @@ exports.checkPhone = async (req, res, next) => {
   try {
     const ckeck = await UserService.checkPhone(phone)
     res.json({ data: ckeck })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getRefCount = async function (req, res, next) {
+  const id = req.params.id
+
+  try {
+    const referrals = await UserService.getRefCount(id)
+    res.json({ data: referrals })
   } catch (err) {
     next(err)
   }

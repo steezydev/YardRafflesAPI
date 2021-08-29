@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+require('sequelize-hierarchy')(Sequelize);
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -31,6 +32,10 @@ db.user = require('./userModel.js')(sequelize, Sequelize)
 db.participation = require('./participationModel.js')(sequelize, Sequelize)
 db.blocked = require('./blockedModel.js')(sequelize, Sequelize)
 db.referral = require('./referralModel.js')(sequelize, Sequelize)
+
+
+sequelize.models.usersancestor.sync();
+console.log(sequelize.models)
 
 db.announce.belongsToMany(db.tags, {
   through: 'rel_announcements_to_tag',
