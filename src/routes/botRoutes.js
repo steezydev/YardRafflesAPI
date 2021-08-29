@@ -227,13 +227,13 @@ router.get(
 
 /**
  * @name getRefCount
- * @link 
+ * @link https://app.swaggerhub.com/apis/Nuko/YardRaffleBot/1.0.0#/bot/getRefCounts
  */
  router.get(
-  '/getRefCount/:id',
+  '/getRefCount/:telegramId',
   [
     botAuthMiddleware.checkKey,
-    botValidation.getRaffle
+    botValidation.getBotUser
   ],
   BotController.getRefCount
 )

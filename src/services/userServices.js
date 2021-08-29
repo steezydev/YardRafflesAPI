@@ -18,30 +18,31 @@ const _ = require('lodash')
    * 
 */
 
-exports.getRefCount = async function (userId) {
+exports.getRefCount = async function (telegramId) {
   try {
-    const options = {
-      model: Referral,
-      as: 'c',
-      attributes: ['id'],
-      where: { id: 26 },
-      include: {
-        model: Referral,
-        as: 'c1',
-        attributes: ['id'],
-        where: { id: 26 },
-        include: [{
-          model: Referral,
-          as: 'c2',
-          attributes: ['id'],
-          where: { id: 26 }
-        }]
-      }
+    const user = await exports.getUserByTelegramId(telegramId)
+    //const user = await exports.getUserById(userId)
+
+    const referrals = user.getDescendents({raw: true})
+
+    let refCount = {
+      firstLevel: 0,
+      secondLevel: 0,
+      thirdLevel: 0
     }
+    const currentHLevel = user.hierarchyLevel
 
-    const referrals = await Referral.findAndCountAll(options)
+    await referrals.each((ref) => {
+      if (ref.hierarchyLevel == currentHLevel + 1) {
+        refCount.firstLevel += 1
+      } else if (ref.hierarchyLevel == currentHLevel + 2) {
+        refCount.secondLevel += 1
+      } else if (ref.hierarchyLevel == currentHLevel + 3) {
+        refCount.thirdLevel += 1
+      }
+    })
 
-    return referrals
+    return refCount
   } catch (err) {
     const errorMessage = { status: err.status || 500, message: err.message || 'Some error occurred.' }
     throw errorMessage

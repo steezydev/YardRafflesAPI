@@ -210,10 +210,10 @@ exports.checkPhone = async (req, res, next) => {
 }
 
 exports.getRefCount = async function (req, res, next) {
-  const id = req.params.id
+  const telegramId = req.params.telegramId
 
   try {
-    const referrals = await UserService.getRefCount(id)
+    const referrals = await UserService.getRefCount(telegramId)
     res.json({ data: referrals })
   } catch (err) {
     next(err)
