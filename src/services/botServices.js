@@ -73,7 +73,7 @@ exports.addUser = async function (newUser, refHash) {
 
     return createdUser
   } catch (err) {
-    throw { status: err.status || 500, message: err.message || 'Some error occurred while getting Announces.' }
+    throw { status: err.status || 500, message: err.message || 'Some error occurred while creating a new User.' }
   }
 }
 
