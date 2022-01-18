@@ -1,7 +1,9 @@
 <img src="./public/cover.png">
 
-![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
+![Javascript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![express](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFBe)
+![mysql](https://img.shields.io/badge/MySQL-000022?style=for-the-badge&logo=mysql&logoColor=white)
+![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
 
 ![swag](https://forthebadge.com/images/badges/built-with-swag.svg)
 
@@ -26,6 +28,7 @@ Our project consists of 3 parts:
 ```sh
 npm install
 ```
+ configure `/src/config/db.config.js` file with current DB
 
 ## Usage
 
