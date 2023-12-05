@@ -6,8 +6,6 @@
 ![mysql](https://img.shields.io/badge/MySQL-000022?style=for-the-badge&logo=mysql&logoColor=white)
 ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
 
-![swag](https://forthebadge.com/images/badges/built-with-swag.svg)
-
 > YardBot is a telegram bot and part of **YardRaffles** project. It was created to give users easy and native experience using YardRaffles system.
 
 # About
