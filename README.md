@@ -6,7 +6,7 @@
 ![mysql](https://img.shields.io/badge/MySQL-000022?style=for-the-badge&logo=mysql&logoColor=white)
 ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
 
-# YeardBot API
+# YardBot API
 
 > Created by Ivan Ilichev | 05.12.2023 | TTC8430-3003
 
@@ -20,7 +20,7 @@ This project focuses on such raffles. Its primary objective is to facilitate gen
 
 ### Time spent
 
-YeardBot was a project that was initally intended to go into production, so the total time spent including research, negotiations and planning would be `2 months`. _Unfortunately, it was never finished..._
+YardBot was a project that was initially intended to go into production, so the total time spent including research, negotiations and planning would be `2 months`. _Unfortunately, it was never finished..._
 
 However, total time spent on development could be summarized into `2 weeks` of total work
 
@@ -28,7 +28,7 @@ However, total time spent on development could be summarized into `2 weeks` of t
 
 I think I did a great job cultivating and implementing my initial idea. This project includes most of the knowledge from Web server programming course and suites the grading criteria for the project assignment. I think it can be assessed with the highest grade.
 
-I have sucessfuly implemented:
+I have successfully implemented:
 
 - Database structure - database structure allow almost complete functionality of the app as planned initially
 - API endpoints - existing endpoints allow almost complete functionality of the app as planned initially
@@ -40,7 +40,7 @@ I might have done better:
 - Error handling - error handling code could be optimize to avoid repeating patterns
 - DB field names - inconsistent naming and case
 - Images - images are currently handled as link to external sources
-- Status field - right now status is handled with a number and doesn't have a separete model
+- Status field - right now status is handled with a number and doesn't have a separate model
 - Using Sequelize - it was a big mistake...
 
 ## Structure
@@ -68,7 +68,7 @@ DB dump can be found [here](/database.sql)
 
 ## Getting started
 
-### Install dependancies
+### Install dependencies
 
 ```sh
 npm install
