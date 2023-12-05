@@ -8,7 +8,7 @@
 
 # YardBot API
 
-> Created by Ivan Ilichev | 05.12.2023 | TTC8430-3003
+> Created by Ivan Ilichev AB0185 | 05.12.2023 | TTC8430-3003
 
 ## Overview
 
