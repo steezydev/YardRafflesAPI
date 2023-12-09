@@ -12,6 +12,8 @@
 
 ## Overview
 
+[Video overview (WEB SERVER DEMO)](https://drive.google.com/file/d/1E1_GA_ZotxOmMTn9e-lm6C435Kh3Qh3n/view?usp=sharing)
+
 [YardBot](https://github.com/steezydev/YardRafflesBot) is a telegram bot and part of **YardRaffles** project. This is an API backend solution - a core of the YardRaffles project.
 
 Rare clothing items, particularly sneakers, are frequently sold in limited quantities, making their purchase challenging. To address this, major brands and their retailers conduct raffles granting the "right to purchase" these exclusive fashion pieces, simultaneously boosting their social media following.
